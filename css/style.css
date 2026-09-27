@@ -136,10 +136,6 @@ form {
     padding: 1rem 1rem 1rem;
 }
 
-.campo-form {
-    margin: 2rem 0 0 1rem
-}
-
 footer {
     background-color: var(--bg-nav);
     font-style: italic;
@@ -147,4 +143,65 @@ footer {
     padding: 0.7rem 0;
     color: var(--text-primary);
     grid-area: footer;
+}
+
+
+
+
+
+/* Limpieza previa del fieldset */
+form fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem; /* Espaciado uniforme entre cada .campo-form */
+}
+
+/* Estructura responsiva de cada contenedor de campo */
+.campo-form {
+    display: flex;
+    flex-direction: column; /* Alinea el label arriba y el input abajo en móviles */
+    gap: 0.4rem;             /* Espacio entre la etiqueta y el input/textarea */
+    width: 100%;            /* Fluidez total */
+    max-width: 36rem;       /* Evita que el campo se extienda demasiado en pantallas anchas */
+}
+
+/* Estilo y adaptación fluida de los inputs y textarea */
+.campo-form input[type="text"],
+.campo-form input[type="email"],
+.campo-form textarea {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    box-sizing: border-box; /* Evita que el padding sobrepase el 100% del ancho */
+    background-color: var(--bg-primary, #ffffff);
+    color: var(--text-primary, #333333);
+}
+
+/* Caja de mensaje */
+.campo-form textarea {
+    min-height: 8rem;
+}
+
+/* Ajustes responsivos para el contenedor de botones (último .campo-form) */
+.campo-form:last-child {
+    flex-direction: row;     /* Coloca los botones uno al lado del otro */
+    flex-wrap: wrap;         /* Si la pantalla es muy estrecha, los apila */
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Estilos básicos para los botones dentro de .campo-form */
+.campo-form button {
+    font-family: var(--font-family);
+    font-weight: bold;
+    color: var(--text-accent);
+    background-color: var(--bg-nav);
+    padding: 0.7rem 0.7rem;
+    border-radius: 1rem;
+    cursor: pointer;
 }
