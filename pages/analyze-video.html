@@ -31,13 +31,33 @@
     <main>
         <h2>check out your videos here</h2>
         
-        <article>
-            <p>This is the analyze video page.</p>
+        <article class="analyze-form">
+            <p class="paragraph">
+                compare a reference video against a distorted version using VMAF.
+            </p>
+
+            <form id="vmaf-form" novalidate>
+                <div class="file-input">
+                    <label for="reference-video">reference video</label>
+                    <input type="file" id="reference-video" name="reference" accept="video/*" required>
+                </div>
+
+                <div class="file-input">
+                    <label for="distorted-video">distorted video</label>
+                    <input type="file" id="distorted-video" name="distorted" accept="video/*" required>
+                </div>
+
+                <button type="submit">analyze</button>
+            </form>
+
+            <div id="result"></div>
+            <script src="../js/analyze-video.js"></script>
         </article>
     </main>
 
     <footer class="site-footer">
         <p>&copy; 2026 sherboa engine. all rights reserved.</p>
     </footer>
+
 </body>
 </html>

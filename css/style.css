@@ -33,6 +33,7 @@ html {
     font-size: 16px;  /* Tamaño de letra para todo el documento */
 }
 
+
 body {
     display: grid;
     font-family: var(--font-family);
@@ -124,7 +125,7 @@ article {
     display: block;  /* Hace que la imagen sea un bloque */
     max-width: 100%;  /* Ajusta el tamaño máximo de la imagen al ancho del contenedor */
     height: auto;  /* Mantiene la proporción de la imagen */
-    margin: 1rem auto;  /* Centra la imagen horizontalmente y agrega espacio arriba y abajo */
+    margin: 2rem auto 1rem;  /* Centra la imagen horizontalmente y agrega espacio arriba y abajo */
 }
 
 .paragraph {
@@ -160,7 +161,7 @@ form fieldset {
 }
 
 /* Estructura responsiva de cada contenedor de campo */
-.campo-form {
+.contact-form {
     display: flex;
     flex-direction: column; /* Alinea el label arriba y el input abajo en móviles */
     gap: 0.4rem;             /* Espacio entre la etiqueta y el input/textarea */
@@ -169,9 +170,9 @@ form fieldset {
 }
 
 /* Estilo y adaptación fluida de los inputs y textarea */
-.campo-form input[type="text"],
-.campo-form input[type="email"],
-.campo-form textarea {
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
     width: 100%;
     font-size: 1rem;
     padding: 0.6rem 0.8rem;
@@ -183,12 +184,12 @@ form fieldset {
 }
 
 /* Caja de mensaje */
-.campo-form textarea {
+.contact-form textarea {
     min-height: 8rem;
 }
 
 /* Ajustes responsivos para el contenedor de botones (último .campo-form) */
-.campo-form:last-child {
+.contact-form:last-child {
     flex-direction: row;     /* Coloca los botones uno al lado del otro */
     flex-wrap: wrap;         /* Si la pantalla es muy estrecha, los apila */
     gap: 1rem;
@@ -196,7 +197,8 @@ form fieldset {
 }
 
 /* Estilos básicos para los botones dentro de .campo-form */
-.campo-form button {
+.contact-form button {
+    align-self: flex-start;
     font-family: var(--font-family);
     font-weight: bold;
     color: var(--text-accent);
@@ -204,4 +206,61 @@ form fieldset {
     padding: 0.7rem 0.7rem;
     border-radius: 1rem;
     cursor: pointer;
+}
+
+.contact-form button:hover {
+    background-color: var(--bg-active);
+    color: var(--text-dark);
+}
+
+
+
+
+
+/* Analyze video form */
+.analyze-form {
+    max-width: 50rem;
+}
+
+.analyze-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.file-input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.file-input label {
+    font-weight: bold;
+    color: var(--text-accent);
+}
+
+.file-input input[type="file"] {
+    font-family: var(--font-family);
+    color: var(--text-primary);
+}
+
+.analyze-form button {
+    align-self: flex-start;
+    font-family: var(--font-family);
+    font-weight: bold;
+    color: var(--text-accent);
+    background-color: var(--bg-nav);
+    padding: 0.7rem 0.7rem;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.analyze-form button:hover {
+    background-color: var(--bg-active);
+    color: var(--text-dark);
+}
+
+#result {
+    margin-top: 2rem;
+    margin-left: 1rem;
 }
