@@ -34,7 +34,9 @@ form.addEventListener("submit", async (event) => {
         }
 
         result.textContent = `vmaf score: ${data.vmaf}`;
-    } catch (error) {
+    }
+    
+    catch (error) {
         console.error(error);
         result.textContent = "unable to connect to the server.";
     }
