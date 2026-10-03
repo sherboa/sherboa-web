@@ -57,7 +57,7 @@ header {
     gap: 1.5rem;  /* Espacio entre los elementos del encabezado */
     
     .logo-header {
-        width: 5rem;  /* Ajusta el tamaño del logo */
+        width: 4rem;  /* Ajusta el tamaño del logo */
         height: auto;  /* Mantiene la proporción del logo */
     }
 }
@@ -121,7 +121,7 @@ article {
     padding: 1rem;
 }
 
-.image {
+.central-image {
     display: block;  /* Hace que la imagen sea un bloque */
     max-width: 100%;  /* Ajusta el tamaño máximo de la imagen al ancho del contenedor */
     height: auto;  /* Mantiene la proporción de la imagen */
@@ -138,7 +138,7 @@ form {
 }
 
 footer {
-    display: flex;
+    display: flex;  /* Utiliza flexbox para el diseño del pie de página */
     background-color: var(--bg-nav);
     font-style: italic;
     text-align: center;
@@ -147,14 +147,24 @@ footer {
     grid-area: footer;
     justify-content: center;
 
-    .logo-footer {
-        position: absolute;
+    .text-footer {
+        white-space: nowrap;
+        width: auto;
+    }
+
+    .logo-footer-1 {
+        position: absolute;  /* Posiciona el logo GitHub en la esquina inferior derecha */
         right: 1rem;
         width: 1.5rem;  /* Ajusta el tamaño del logo */
         height: auto;  /* Mantiene la proporción del logo */
     }
+    .logo-footer-2 {
+        position: absolute;  /* Posiciona el logo LinkedIn en la esquina inferior derecha */
+        right: 3rem;
+        width: 1.5rem;  /* Ajusta el tamaño del logo */
+        height: auto;  /* Mantiene la proporción del logo */
+    }
 }
-
 
 
 
@@ -165,17 +175,17 @@ form fieldset {
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: column;
-    gap: 1.25rem; /* Espaciado uniforme entre cada .campo-form */
+    flex-direction: column;  /* Alinea los elementos de cada campo verticalmente */
+    gap: 1.25rem;  /* Espaciado uniforme entre cada .campo-form */
 }
 
 /* Estructura responsiva de cada contenedor de campo */
 .contact-form {
     display: flex;
-    flex-direction: column; /* Alinea el label arriba y el input abajo en móviles */
-    gap: 0.4rem;             /* Espacio entre la etiqueta y el input/textarea */
-    width: 100%;            /* Fluidez total */
-    max-width: 36rem;       /* Evita que el campo se extienda demasiado en pantallas anchas */
+    flex-direction: column;  /* Alinea el label arriba y el input abajo en móviles */
+    gap: 0.4rem;  /* Espacio entre la etiqueta y el input/textarea */
+    width: 100%;  /* Fluidez total */
+    max-width: 36rem;  /* Evita que el campo se extienda demasiado en pantallas anchas */
 }
 
 /* Estilo y adaptación fluida de los inputs y textarea */
@@ -187,7 +197,7 @@ form fieldset {
     padding: 0.6rem 0.8rem;
     border: 1px solid #ccc;
     border-radius: 0.25rem;
-    box-sizing: border-box; /* Evita que el padding sobrepase el 100% del ancho */
+    box-sizing: border-box;  /* Evita que el padding sobrepase el 100% del ancho */
     background-color: var(--bg-primary, #ffffff);
     color: var(--text-primary, #333333);
 }
@@ -199,25 +209,25 @@ form fieldset {
 
 /* Ajustes responsivos para el contenedor de botones (último .campo-form) */
 .contact-form:last-child {
-    flex-direction: row;     /* Coloca los botones uno al lado del otro */
-    flex-wrap: wrap;         /* Si la pantalla es muy estrecha, los apila */
+    flex-direction: row;  /* Coloca los botones uno al lado del otro */
+    flex-wrap: wrap;  /* Si la pantalla es muy estrecha, los apila */
     gap: 1rem;
     margin-top: 0.5rem;
 }
 
 /* Estilos básicos para los botones dentro de .campo-form */
 .contact-form button {
-    align-self: flex-start;
+    align-self: flex-start;  /* Alinea el botón al inicio del contenedor */
     font-family: var(--font-family);
     font-weight: bold;
     color: var(--text-accent);
     background-color: var(--bg-nav);
     padding: 0.7rem 0.7rem;
     border-radius: 1rem;
-    cursor: pointer;
+    cursor: pointer;  /* Cambia el cursor al pasar sobre el botón */
 }
 
-.contact-form button:hover {
+.contact-form button:hover {  /* Seudoclase para el hover del botón */
     background-color: var(--bg-active);
     color: var(--text-dark);
 }
@@ -272,4 +282,36 @@ form fieldset {
 #result {
     margin-top: 2rem;
     margin-left: 1rem;
+}
+
+
+/* Responsividad para tablets/pantallas medianas */
+@media (max-width: 992px) {
+    body {
+        font-size: 0.95rem;
+    }
+        .central-image {
+            max-width: 60%;
+    }
+    footer {
+        font-size: 0.95rem;
+    }
+}
+
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 600px) {
+    body {
+        font-size: 0.9rem;
+    }
+    .central-image {
+            max-width: 80%;
+    }
+    footer {
+        font-size: 0.9rem;
+        .text-footer {
+            white-space: normal;
+            max-width: 200px;
+        }
+    }
 }
