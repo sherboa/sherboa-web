@@ -34,12 +34,47 @@
         <h2>how does this work?</h2>
 
         <article>
-            <p>This is the how it works page.</p>
+            <p class="paragraph">
+                the goal is simple: reference video + distorted video -> analysis -> quality metrics<br>
+                results: VMAF mean - max - min, PSNR, SSIM, JSON - XML - CSV files, and more!
+            </p>
+        </article>
+
+
+        <section class="product-container">
+            <article class="product-card">
+                <img src="../assets/images/reference-frame.jpg" alt="reference frame" loading="lazy" class="product-img">
+            
+                <div class="product-content">
+                    <span class="product-category">reference video frame: quality baseline</span>
+                    <p class="product-description">original high resolution-uncompressed 1080p 25fps source video</p>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <img src="../assets/images/distorted-frame.jpg" alt="distorted frame" loading="lazy" class="product-img">
+            
+                <div class="product-content">
+                    <span class="product-category">distorted video frame, under evaluation</span>
+                    <p class="product-description">transcoded high compressed-cropped 480p 25fps video</p>
+                </div>
+            </article>
+        </section>
+
+        <article>
+            <p class="paragraph">
+                for meaningful results, make sure the reference and distorted videos should represent the same content and be temporally alligned.<br>
+            </p>
+
+            <p class="paragraph">
+                keep in mind that VMAF is a perceptual quality metric, not an absolute measurement of video quality.<br>
+                use it together with technical analysis and other relevant metrics whenever evaluating encoding/transcoding performance.
+            </p>
         </article>
     </main>
 
-    <footer class="site-footer">
-        <a href="https://github.com/Sherboa" target="_blank">
+    <footer>
+        <a href="https://github.com/sherboa" target="_blank">
             <img class="logo-footer-1" src="../assets/images/github.svg" alt="github isotype" loading="lazy">
         </a>
         <a href="https://www.linkedin.com/in/juan-jose-acuña-esparza-566a9678" target="_blank">
