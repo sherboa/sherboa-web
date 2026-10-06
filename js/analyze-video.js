@@ -4,6 +4,9 @@ const form = document.getElementById("vmaf-form");
 
 const vmafResult = document.getElementById("vmaf-result");
 const psnrResult = document.getElementById("psnr-result");
+const vmafChartContainer = document.getElementById("vmaf-chart-container");
+const psnrChartContainer = document.getElementById("psnr-chart-container");
+
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -75,9 +78,7 @@ form.addEventListener("submit", async (event) => {
         });
 
 
-        psnrResult.textContent += `
-        
-        PSNR
+        psnrResult.textContent = `PSNR
         mean: ${data.psnr.mean}
         min: ${data.psnr.min}
         max: ${data.psnr.max}`;
@@ -93,7 +94,7 @@ form.addEventListener("submit", async (event) => {
                 datasets: [{
                     label: "PSNR",
                     data: data.psnr.per_frame,
-                    borderColor: "red"
+                    borderColor: "red",
                     tension: 0.2
                 }]
             },
