@@ -328,6 +328,15 @@ form fieldset {
 }
 
 
+
+
+#vmaf-chart-container {
+    height: 400px;
+}
+
+
+
+
 /* Responsividad para tablets/pantallas medianas */
 @media (max-width: 992px) {
     body {
