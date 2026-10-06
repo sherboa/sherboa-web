@@ -212,6 +212,7 @@ footer {
 }
 
 
+/*************************************************************************/
 /* Limpieza previa del fieldset */
 form fieldset {
     border: none;
@@ -245,7 +246,6 @@ form fieldset {
     color: var(--text-primary, #333333);
 }
 
-/* Caja de mensaje */
 .contact-form textarea {
     min-height: 8rem;
 }
@@ -274,19 +274,19 @@ form fieldset {
     background-color: var(--bg-active);
     color: var(--text-dark);
 }
+/*************************************************************************/
 
 
 
-
-
-/* Analyze Video form */
+/*************************************************************************/
+/* Textarea para la pagina analyze-video.html */
 .analyze-form {
     max-width: 50rem;
 }
 
 .analyze-form form {
-    display: flex;
-    flex-direction: column;
+    display: flex;  /* Utiliza flexbox para organizar los elementos del formulario */
+    flex-direction: column;  /* Alinea los elementos del formulario verticalmente */
     gap: 3rem;
 }
 
@@ -307,38 +307,44 @@ form fieldset {
 }
 
 .analyze-form button {
-    align-self: flex-start;
+    align-self: flex-start;  /* Alinea el botón al inicio del contenedor */
     font-family: var(--font-family);
     font-weight: bold;
     color: var(--text-accent);
     background-color: var(--bg-nav);
     padding: 0.7rem 0.7rem;
-    border-radius: 1rem;
-    cursor: pointer;
+    border-radius: 1rem;  /* Bordes redondeados para el botón */
+    cursor: pointer;  /* Cambia el cursor al pasar sobre el botón */
 }
 
 .analyze-form button:hover {
     background-color: var(--bg-active);
     color: var(--text-dark);
 }
+/*************************************************************************/
 
+
+
+/*************************************************************************/
+/* Estilos para los resultados de VMAF y PSNR */
 #result {
     margin-top: 2rem;
     margin-left: 1rem;
 }
 
-
 #vmaf-result,
 #psnr-result {
-    white-space: pre-line;
+    white-space: pre-line;  /* Permite que el texto se ajuste a varias líneas */
     margin-left: 1rem;
 }
 
-.chart-container {
-    display: none;
-    height: clamp(300px, 40vh, 500px);
-}
 
+/* Estilos para el contenedor del gráfico */
+.chart-container {
+    display: none;  /* Oculta el contenedor del gráfico por defecto */
+    height: clamp(300px, 40vh, 500px);  /* Ajusta la altura del gráfico de manera responsiva */
+}
+/*************************************************************************/
 
 
 
@@ -367,8 +373,8 @@ form fieldset {
     footer {
         font-size: 0.9rem;
         .text-footer {
-            white-space: normal;
-            max-width: 200px;
+            white-space: normal;  /* Permite que el texto se ajuste a varias líneas en pantallas pequeñas */
+            max-width: 200px;  /* Limita el ancho del texto del footer para evitar que se desborde */
         }
     }
 }
@@ -385,8 +391,8 @@ form fieldset {
     footer {
         font-size: 0.75rem;
         .text-footer {
-            white-space: normal;
-            max-width: 180px;
+            white-space: normal;  /* Permite que el texto se ajuste a varias líneas en pantallas muy pequeñas */
+            max-width: 180px;  /* Limita el ancho del texto del footer para evitar que se desborde */
         }
     }
 }
