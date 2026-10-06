@@ -95,6 +95,7 @@ form.addEventListener("submit", async (event) => {
                     label: "PSNR",
                     data: data.psnr.per_frame,
                     borderColor: "red",
+                    backgroundColor: "#BD4C33",
                     tension: 0.2
                 }]
             },

@@ -328,7 +328,10 @@ form fieldset {
 }
 
 
-
+#vmaf-result,
+#psnr-result {
+    white-space: pre-line;
+}
 
 .chart-container {
     display: none;
