@@ -33,7 +33,39 @@ form.addEventListener("submit", async (event) => {
             return;
         }
 
-        result.textContent = JSON.stringify(data, null, 2);
+        result.textContent = `vmaf score: ${data.vmaf.mean}`;
+
+        const ctx = document.getElementById("vmaf-chart");
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: data.vmaf.per_frame.map((_, index) => index + 1),
+                datasets: [{
+                    label: "VMAF",
+                    data: data.vmaf.per_frame,
+                    tension: 0.2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "frame"
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "vmaf"
+                        }
+                    }
+                }
+            }
+        });
     }
     
     catch (error) {
