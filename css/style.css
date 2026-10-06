@@ -330,12 +330,9 @@ form fieldset {
 
 
 
-#vmaf-chart-container {
-    height: 400px;
-}
-
-#psnr-chart-container {
-    height: 400px;
+.chart-container {
+    display: none;
+    height: clamp(300px, 40vh, 500px);
 }
 
 

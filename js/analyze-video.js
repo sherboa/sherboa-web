@@ -1,7 +1,9 @@
 const API_URL = "https://sherboa-api.duckdns.org";
 
 const form = document.getElementById("vmaf-form");
-const result = document.getElementById("result");
+
+const vmafResult = document.getElementById("vmaf-result");
+const psnrResult = document.getElementById("psnr-result");
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -10,11 +12,11 @@ form.addEventListener("submit", async (event) => {
     const distortedVideo = document.getElementById("distorted-video").files[0];
 
     if (!referenceVideo || !distortedVideo) {
-        result.textContent = "please select both videos.";
+        vmafResult.textContent = "please select both videos.";
         return;
     }
 
-    result.textContent = "analyzing...";
+    vmafResult.textContent = "analyzing...";
 
     const formData = new FormData();
     formData.append("reference", referenceVideo);
@@ -29,14 +31,16 @@ form.addEventListener("submit", async (event) => {
         const data = await response.json();
 
         if (!response.ok) {
-            result.textContent = data.detail || "analysis failed.";
+            vmafResult.textContent = data.detail || "analysis failed.";
             return;
         }
 
-        result.textContent = `VMAF
+        vmafResult.textContent = `VMAF
         mean: ${data.vmaf.mean}
         min: ${data.vmaf.min}
         max: ${data.vmaf.max}`;
+
+        vmafChartContainer.style.display = "block";
 
         const ctx = document.getElementById("vmaf-chart");
 
@@ -71,12 +75,14 @@ form.addEventListener("submit", async (event) => {
         });
 
 
-        result.textContent += `
+        psnrResult.textContent += `
         
         PSNR
         mean: ${data.psnr.mean}
         min: ${data.psnr.min}
         max: ${data.psnr.max}`;
+
+        psnrChartContainer.style.display = "block";
 
         const psnrCtx = document.getElementById("psnr-chart");
 
@@ -87,6 +93,7 @@ form.addEventListener("submit", async (event) => {
                 datasets: [{
                     label: "PSNR",
                     data: data.psnr.per_frame,
+                    borderColor: "red"
                     tension: 0.2
                 }]
             },
@@ -114,6 +121,6 @@ form.addEventListener("submit", async (event) => {
     
     catch (error) {
         console.error(error);
-        result.textContent = "unable to connect to the server.";
+        vmafResult.textContent = "unable to connect to the server.";
     }
 });
