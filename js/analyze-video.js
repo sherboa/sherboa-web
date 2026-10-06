@@ -33,7 +33,10 @@ form.addEventListener("submit", async (event) => {
             return;
         }
 
-        result.textContent = `vmaf score: ${data.vmaf.mean}`;
+        result.textContent = `VMAF
+        mean: ${data.vmaf.mean}
+        min: ${data.vmaf.min}
+        max: ${data.vmaf.max}`;
 
         const ctx = document.getElementById("vmaf-chart");
 
@@ -60,7 +63,7 @@ form.addEventListener("submit", async (event) => {
                     y: {
                         title: {
                             display: true,
-                            text: "vmaf"
+                            text: "VMAF"
                         }
                     }
                 }
