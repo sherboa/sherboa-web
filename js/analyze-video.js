@@ -33,7 +33,7 @@ form.addEventListener("submit", async (event) => {
             return;
         }
 
-        result.textContent = `vmaf score: ${data.vmaf}`;
+        result.textContent = JSON.stringify(data, null, 2);
     }
     
     catch (error) {

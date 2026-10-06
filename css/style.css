@@ -333,8 +333,8 @@ form fieldset {
     body {
         font-size: 0.95rem;
     }
-        .central-image {
-            max-width: 60%;
+    .central-image {
+        max-width: 80%;
     }
     footer {
         font-size: 0.95rem;
@@ -348,7 +348,7 @@ form fieldset {
         font-size: 0.9rem;
     }
     .central-image {
-            max-width: 80%;
+        max-width: 70%;
     }
     footer {
         font-size: 0.9rem;
@@ -366,7 +366,7 @@ form fieldset {
         font-size: 0.75rem;
     }
     .central-image {
-            max-width: 60%;
+        max-width: 60%;
     }
     footer {
         font-size: 0.75rem;
