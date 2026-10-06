@@ -69,6 +69,47 @@ form.addEventListener("submit", async (event) => {
                 }
             }
         });
+
+
+        result.textContent += `
+        
+        PSNR
+        mean: ${data.psnr.mean}
+        min: ${data.psnr.min}
+        max: ${data.psnr.max}`;
+
+        const psnrCtx = document.getElementById("psnr-chart");
+
+        new Chart(psnrCtx, {
+            type: "line",
+            data: {
+                labels: data.psnr.per_frame.map((_, index) => index + 1),
+                datasets: [{
+                    label: "PSNR",
+                    data: data.psnr.per_frame,
+                    tension: 0.2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "frame"
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "PSNR"
+                        }
+                    }
+                }
+            }
+        });
+
     }
     
     catch (error) {
