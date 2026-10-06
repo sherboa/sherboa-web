@@ -279,7 +279,7 @@ form fieldset {
 
 
 
-/* Analyze video form */
+/* Analyze Video form */
 .analyze-form {
     max-width: 50rem;
 }
@@ -331,6 +331,7 @@ form fieldset {
 #vmaf-result,
 #psnr-result {
     white-space: pre-line;
+    margin-left: 1rem;
 }
 
 .chart-container {
