@@ -59,6 +59,7 @@ header {
     .logo-header {
         width: 4rem;  /* Ajusta el tamaño del logo */
         height: auto;  /* Mantiene la proporción del logo */
+        object-fit: contain  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
     }
 }
 
@@ -139,10 +140,13 @@ form {
 
 .product-container {
     display: flex;  /* Utiliza flexbox para organizar los productos */
-    justify-content: center;
+    flex-direction: row;  /* Alinea los productos en una fila */
+    justify-content: center;  /* Centra los productos horizontalmente */
     flex-wrap: wrap;  /* Permite que los productos se ajusten a diferentes tamaños de pantalla */
-    gap: 4rem;
-    padding-top: 1rem;
+    gap: 3rem;  /* Espacio entre los productos */
+    margin: 0 auto;  /* Centra el contenedor de productos horizontalmente */
+    padding-top: 1rem;  /* Espacio arriba del contenedor de productos */
+    width: 100%;  /* Ajusta el ancho del contenedor de productos al 100% del contenedor padre */
 
     .product-description {
         display: -webkit-box;  /* Utiliza un contenedor flexible para el texto */
@@ -176,7 +180,7 @@ form {
             object-fit: cover;  /* Ajusta la imagen para cubrir el contenedor sin distorsionarse */
             display: block;  /* Hace que la imagen sea un bloque */
             width: 100%;
-            height: 20rem;
+            height: auto;
         }
     }
 }
@@ -200,14 +204,18 @@ footer {
     .logo-footer-1 {
         position: absolute;  /* Posiciona el logo GitHub en la esquina inferior derecha */
         right: 1rem;
-        width: 1.5rem;  /* Ajusta el tamaño del logo */
-        height: auto;  /* Mantiene la proporción del logo */
+        width: auto;  /* Mantiene la proporción del logo */
+        height: 1.5rem;  /* Ajusta el tamaño del logo */
+        max-width: 100%;  /* Asegura que el logo no exceda el ancho del contenedor */
+        object-fit: contain;  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
     }
     .logo-footer-2 {
         position: absolute;  /* Posiciona el logo LinkedIn en la esquina inferior derecha */
         right: 3rem;
-        width: 1.5rem;  /* Ajusta el tamaño del logo */
-        height: auto;  /* Mantiene la proporción del logo */
+        width: auto;  /* Mantiene la proporción del logo */
+        height: 1.5rem;  /* Ajusta el tamaño del logo */
+        max-width: 100%;  /* Asegura que el logo no exceda el ancho del contenedor */
+        object-fit: contain;  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
     }
 }
 
@@ -333,7 +341,8 @@ form fieldset {
 }
 
 #vmaf-result,
-#psnr-result {
+#psnr-result,
+#ssim-result {
     white-space: pre-line;  /* Permite que el texto se ajuste a varias líneas */
     margin-left: 1rem;
 }
@@ -348,16 +357,17 @@ form fieldset {
 
 
 
+/************************************************************************/
 /* Responsividad para tablets/pantallas medianas */
 @media (max-width: 992px) {
     body {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
     .central-image {
         max-width: 80%;
     }
     footer {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
 }
 
@@ -365,13 +375,13 @@ form fieldset {
 /* Responsividad para pantallas pequeñas */
 @media (max-width: 600px) {
     body {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     .central-image {
         max-width: 70%;
     }
     footer {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         .text-footer {
             white-space: normal;  /* Permite que el texto se ajuste a varias líneas en pantallas pequeñas */
             max-width: 200px;  /* Limita el ancho del texto del footer para evitar que se desborde */
@@ -396,3 +406,4 @@ form fieldset {
         }
     }
 }
+/************************************************************************/

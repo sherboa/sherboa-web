@@ -45,7 +45,8 @@ sherboa-web/
 │   ├── contact.html
 │   └── how-it-works.html
 ├── index.html              # Main landing page
-└── README.md
+├── README.md
+└── LICENSE
 ```
 
 ## How It Works
@@ -116,4 +117,4 @@ Changes pushed to the main branch are deployed through Netlify.
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the [MIT License](LICENSE).

@@ -4,6 +4,7 @@ const form = document.getElementById("vmaf-form");
 
 const vmafResult = document.getElementById("vmaf-result");  /* Elemento para mostrar los resultados de VMAF */
 const psnrResult = document.getElementById("psnr-result");  /* Elemento para mostrar los resultados de PSNR */
+const ssimResult = document.getElementById("ssim-result");  /* Elemento para mostrar los resultados de SSIM */
 const vmafChartContainer = document.getElementById("vmaf-chart-container");  /* Contenedor del gráfico de VMAF */
 const psnrChartContainer = document.getElementById("psnr-chart-container");  /* Contenedor del gráfico de PSNR */
 
@@ -119,6 +120,11 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
             }
         });
 
+    ssimResult.textContent = `SSIM
+    global (all): ${data.ssim["global (all)"]}
+    y: ${data.ssim.y}
+    u: ${data.ssim.u}
+    v: ${data.ssim.v}`;
     }
     
     catch (error) {
