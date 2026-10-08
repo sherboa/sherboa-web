@@ -20,7 +20,7 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
         return;
     }
 
-    vmafResult.textContent = "analyzing...";
+    vmafResult.textContent = "analyzing, please wait...";
 
     const formData = new FormData();  /* Crea un objeto FormData para enviar los archivos de video al servidor */
     formData.append("reference", referenceVideo);  /* Agrega el archivo de video de referencia al FormData */

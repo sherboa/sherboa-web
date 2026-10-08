@@ -55,13 +55,15 @@ header {
     align-items: center;  /* Alinea verticalmente los elementos del encabezado */
     justify-content: flex-start;  /* Alinea los elementos del encabezado al inicio */
     gap: 1.5rem;  /* Espacio entre los elementos del encabezado */
-    
-    .logo-header {
-        width: 4rem;  /* Ajusta el tamaño del logo */
-        height: auto;  /* Mantiene la proporción del logo */
-        object-fit: contain  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
-    }
 }
+
+.logo-header {
+    width: 4rem;  /* Ajusta el tamaño del logo */
+    max-width: 100%;  /* Para evitar el desborde */
+    height: auto;  /* Mantiene la proporción del logo */
+    object-fit: contain;  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
+}
+
 
 h1 {
     margin: 0;  /* Espacio a la izquierda del título principal */
@@ -74,6 +76,7 @@ h2 {
 h3 {
     margin: 1rem 1rem 1rem;  /* Espacio del título terciario */
 }
+
 
 nav {
     border-bottom: 0.2rem solid var(--border-accent);
@@ -112,6 +115,7 @@ ul li a:hover:not(.active) {  /* Seudoclase */
     color: var(--text-dark);
 }
 
+
 main {
     background: var(--bg-primary);  /* Color de fondo del contenido principal */
     color: var(--text-primary);  /* Color del texto del contenido principal */
@@ -138,6 +142,9 @@ form {
     padding: 1rem 1rem 1rem;
 }
 
+
+/*************************************************************************/
+/* Cards en la pagina How It Works ***************************************/
 .product-container {
     display: flex;  /* Utiliza flexbox para organizar los productos */
     flex-direction: row;  /* Alinea los productos en una fila */
@@ -147,45 +154,50 @@ form {
     margin: 0 auto;  /* Centra el contenedor de productos horizontalmente */
     padding-top: 1rem;  /* Espacio arriba del contenedor de productos */
     width: 100%;  /* Ajusta el ancho del contenedor de productos al 100% del contenedor padre */
-
-    .product-description {
-        display: -webkit-box;  /* Utiliza un contenedor flexible para el texto */
-        -webkit-box-orient: vertical;  /* Orientación vertical para el contenedor flexible */
-        -webkit-line-clamp: 3;  /* Limita el texto a 3 líneas */
-        line-clamp: 3;  /* Limita el texto a 3 líneas */
-        overflow: hidden;  /* Oculta el texto que excede el límite de líneas */
-        text-overflow: ellipsis;  /* Agrega puntos suspensivos al final del texto que excede el límite de líneas */
-        padding: 1rem;
-    }
-
-    .product-category {
-        padding: 0.5rem;
-    }
-
-    .product-card {
-        border: 0.1rem solid;
-        border-radius: 1rem;
-        flex: 1 1 300px;  /* Permite que la tarjeta del producto sea flexible y se ajuste a diferentes tamaños de pantalla */
-        max-width: 400px;  /* Limita el ancho máximo de la tarjeta del producto */
-        overflow: hidden;  /* Oculta cualquier contenido que exceda los límites del contenedor */
-        padding: 0;
-        transform: translateY(0);  /* Inicializa la posición de la tarjeta del producto */
-        transition: transform 0.3s ease;  /* Agrega una transición suave para el efecto de hover */
-
-        &:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-img {
-            object-fit: cover;  /* Ajusta la imagen para cubrir el contenedor sin distorsionarse */
-            display: block;  /* Hace que la imagen sea un bloque */
-            width: 100%;
-            height: auto;
-        }
-    }
 }
 
+.product-description {
+    display: -webkit-box;  /* Utiliza un contenedor flexible para el texto */
+    -webkit-box-orient: vertical;  /* Orientación vertical para el contenedor flexible */
+    -webkit-line-clamp: 3;  /* Limita el texto a 3 líneas */
+    line-clamp: 3;  /* Limita el texto a 3 líneas */
+    overflow: hidden;  /* Oculta el texto que excede el límite de líneas */
+    text-overflow: ellipsis;  /* Agrega puntos suspensivos al final del texto que excede el límite de líneas */
+    padding: 1rem;
+}
 
+.product-category {
+    padding: 0.5rem;
+}
+
+.product-card {
+    border: 0.1rem solid;
+    border-radius: 1rem;
+    flex: 1 1 300px;  /* Permite que la tarjeta del producto sea flexible y se ajuste a diferentes tamaños de pantalla */
+    max-width: 400px;  /* Limita el ancho máximo de la tarjeta del producto */
+    overflow: hidden;  /* Oculta cualquier contenido que exceda los límites del contenedor */
+    padding: 0;
+    transform: translateY(0);  /* Inicializa la posición de la tarjeta del producto */
+    transition: transform 0.3s ease;  /* Agrega una transición suave para el efecto de hover */
+    margin: 1rem;  /* Margen en lugar de gap para compatibilidad con Flexbox en navegadores viejos */
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-img {
+    object-fit: cover;  /* Ajusta la imagen para cubrir el contenedor sin distorsionarse */
+    display: block;  /* Hace que la imagen sea un bloque */
+    width: 100%;
+    max-width: 100%;  /* Límite para evitar el desborde si el contenedor falla */
+    height: auto;
+}
+/*************************************************************************/
+
+
+/*************************************************************************/
+/* Footer ****************************************************************/
 footer {
     display: flex;  /* Utiliza flexbox para el diseño del pie de página */
     background-color: var(--bg-nav);
@@ -195,33 +207,36 @@ footer {
     color: var(--text-primary);
     grid-area: footer;
     justify-content: center;
-
-    .text-footer {
-        white-space: nowrap;
-        width: auto;
-    }
-
-    .logo-footer-1 {
-        position: absolute;  /* Posiciona el logo GitHub en la esquina inferior derecha */
-        right: 1rem;
-        width: auto;  /* Mantiene la proporción del logo */
-        height: 1.5rem;  /* Ajusta el tamaño del logo */
-        max-width: 100%;  /* Asegura que el logo no exceda el ancho del contenedor */
-        object-fit: contain;  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
-    }
-    .logo-footer-2 {
-        position: absolute;  /* Posiciona el logo LinkedIn en la esquina inferior derecha */
-        right: 3rem;
-        width: auto;  /* Mantiene la proporción del logo */
-        height: 1.5rem;  /* Ajusta el tamaño del logo */
-        max-width: 100%;  /* Asegura que el logo no exceda el ancho del contenedor */
-        object-fit: contain;  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
-    }
+    position: relative;  /* Agregado para que position: absolute funcione bien sobre las imágenes del footer */
 }
+
+.text-footer {
+    white-space: nowrap;
+    width: auto;
+}
+
+.logo-footer-1 {
+    position: absolute;  /* Posiciona el logo GitHub en la esquina inferior derecha */
+    right: 1rem;
+    width: auto;  /* Mantiene la proporción del logo */
+    height: 1.5rem;  /* Ajusta el tamaño del logo */
+    max-width: 100%;  /* Asegura que el logo no exceda el ancho del contenedor */
+    object-fit: contain;  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
+}
+
+.logo-footer-2 {
+    position: absolute;  /* Posiciona el logo LinkedIn en la esquina inferior derecha */
+    right: 3rem;
+    width: auto;  /* Mantiene la proporción del logo */
+    height: 1.5rem;  /* Ajusta el tamaño del logo */
+    max-width: 100%;  /* Asegura que el logo no exceda el ancho del contenedor */
+    object-fit: contain;  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
+}
+/*************************************************************************/
 
 
 /*************************************************************************/
-/* Limpieza previa del fieldset */
+/* Limpieza previa del fieldset ******************************************/
 form fieldset {
     border: none;
     padding: 0;
@@ -287,7 +302,7 @@ form fieldset {
 
 
 /*************************************************************************/
-/* Textarea para la pagina analyze-video.html */
+/* Textarea para la pagina Analyze Video *********************************/
 .analyze-form {
     max-width: 50rem;
 }
@@ -334,7 +349,7 @@ form fieldset {
 
 
 /*************************************************************************/
-/* Estilos para los resultados de VMAF y PSNR */
+/* Estilos para los resultados de VMAF, PSNR y SSIM **********************/
 #result {
     margin-top: 2rem;
     margin-left: 1rem;
@@ -358,7 +373,7 @@ form fieldset {
 
 
 /************************************************************************/
-/* Responsividad para tablets/pantallas medianas */
+/* Responsividad para tablets/pantallas medianas ************************/
 @media (max-width: 992px) {
     body {
         font-size: 0.9rem;
