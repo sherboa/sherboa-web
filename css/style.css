@@ -78,39 +78,42 @@ h3 {
 }
 
 
+.menu-toggle {
+    display: none;
+}
+
 nav {
     border-bottom: 0.2rem solid var(--border-accent);
     grid-area: nav;  /* Asigna el área del grid para la barra de navegación */
 }
 
-ul {
+#nav-menu {
     display: flex;  /* Utiliza flexbox para el diseño de la lista */
     flex-wrap: wrap;  /* Permite que los elementos sean flexibles a cada dispositivo */
     gap: 0rem;  /* Espacio entre los elementos de la lista */
     list-style-type: none;  /* Elimina los bullets de la lista */
-    /*flex: 1 0 200px  Para ver luego */
     margin: 0;
     padding: 0;
     background-color: var(--bg-nav);  /* Color de fondo de la lista */
 }
 
-ul li {
+#nav-menu li {
     font-weight: bold;
 }
 
-ul li a {
+#nav-menu li a {
     display: block;
     padding: 1rem 1rem;
     color: var(--text-accent);  /* Color del texto de los enlaces */
     text-decoration: none;  /* Sin subrayado */
 }
 
-ul li a.active {
+#nav-menu li a.active {
     background-color: var(--bg-active);
     color: var(--text-dark);
 }
 
-ul li a:hover:not(.active) {  /* Seudoclase */
+#nav-menu li a:hover:not(.active) {  /* Seudoclase */
     background-color: var(--bg-active);
     color: var(--text-dark);
 }
@@ -378,9 +381,11 @@ form fieldset {
     body {
         font-size: 0.9rem;
     }
+
     .central-image {
         max-width: 80%;
     }
+
     footer {
         font-size: 0.9rem;
     }
@@ -392,15 +397,54 @@ form fieldset {
     body {
         font-size: 0.85rem;
     }
+
     .central-image {
         max-width: 70%;
     }
+
     footer {
         font-size: 0.85rem;
         .text-footer {
             white-space: normal;  /* Permite que el texto se ajuste a varias líneas en pantallas pequeñas */
             max-width: 200px;  /* Limita el ancho del texto del footer para evitar que se desborde */
         }
+    }
+
+    nav {
+        position: relative;
+        background-color: var(--bg-nav);
+    }
+
+    .menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+    }
+
+    .menu-toggle img {
+        display: block;
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    #nav-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        flex-direction: column;
+        min-width: 200px;
+        z-index: 1000;
+        background-color: var(--bg-nav);
+        border: 1px solid var(--border-accent);
+    }
+
+    .menu-toggle[aria-expanded="true"] img {
+        background-color: var(--bg-active);
+        outline-offset: 0.5px;
+        border-radius: 2px;
     }
 }
 
@@ -410,9 +454,11 @@ form fieldset {
     body {
         font-size: 0.75rem;
     }
+
     .central-image {
         max-width: 60%;
     }
+
     footer {
         font-size: 0.75rem;
         .text-footer {
