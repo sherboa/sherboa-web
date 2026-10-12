@@ -365,12 +365,27 @@ form fieldset {
     margin-left: 1rem;
 }
 
-
 /* Estilos para el contenedor del gráfico */
 .chart-container {
     display: none;  /* Oculta el contenedor del gráfico por defecto */
     height: clamp(300px, 40vh, 500px);  /* Ajusta la altura del gráfico de manera responsiva */
 }
+
+
+/* Animacion de blinking mientras el analisis de video esta corriendo */
+.analyzing {
+    animation: blink 1.2s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.25;
+    }
+}
+
 /*************************************************************************/
 
 
