@@ -9,9 +9,10 @@ const vmafChartContainer = document.getElementById("vmaf-chart-container");  /* 
 const psnrChartContainer = document.getElementById("psnr-chart-container");  /* Contenedor del gráfico de PSNR */
 const ssimChartContainer = document.getElementById("ssim-chart-container");  /* Contenedor del gráfico de SSIM */
 
-let vmafChart = null;
-let psnrChart = null;
-let ssimChart = null;
+let vmafChart = null;  /* Variable para almacenar la instancia del gráfico de VMAF */
+let psnrChart = null;  /* Variable para almacenar la instancia del gráfico de PSNR */
+let ssimChart = null;  /* Variable para almacenar la instancia del gráfico de SSIM */
+let lastAnalysisData = null;  /* Variable para almacenar los datos del último análisis realizado */
 
 
 form.addEventListener("submit", async (event) => {  /* Maneja el evento de envío del formulario */
@@ -44,6 +45,13 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
             vmafResult.textContent = data.detail || "analysis failed.";  /* Muestra un mensaje de error si la respuesta del servidor no es exitosa */
             return;
         }
+
+        lastAnalysisData = data;
+        document.getElementById("download-vmaf-chart").hidden = false;  /* Muestra el botón de descarga del gráfico de VMAF */
+        document.getElementById("download-psnr-chart").hidden = false;  /* Muestra el botón de descarga del gráfico de PSNR */
+        document.getElementById("download-ssim-chart").hidden = false;  /* Muestra el botón de descarga del gráfico de SSIM */
+        document.getElementById("download-data-container").hidden = false;  /* Muestra el contenedor del botón de descarga de datos */
+
 
         vmafResult.textContent = `VMAF [%]
         mean: ${data.vmaf.mean}
@@ -159,7 +167,7 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
                         label: "SSIM",
                         data: data.ssim.per_frame,  /* Datos para el eje y: valores de SSIM por frame */
                         borderColor: "green",
-                        backgroundColor: "#597D28",
+                        backgroundColor: "#396117",
                         tension: 0.2
                     }]
                 },
@@ -178,8 +186,6 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
                                 display: true,
                                 text: "SSIM"
                             },
-                            min: 0,
-                            max: 1
                         }
                     }
                 }
@@ -197,3 +203,174 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
             vmafResult.classList.remove("analyzing");
         }
 });
+
+
+
+/*****************************************************************************************************************************/
+/* DESCARGA DE GRAFICOS EN FORMATO PNG ***************************************************************************************/
+function downloadChart(chart, filename) {  /* Función para descargar el gráfico como imagen */
+    if (chart === null) {
+        return;
+    }
+
+    const link = document.createElement("a");  /* Crea un elemento <a> para descargar la imagen del gráfico */
+    link.href = chart.toBase64Image("image/png");  /* Obtiene la imagen del gráfico en formato base64 */
+    link.download = filename;  /* Establece el nombre del archivo a descargar */
+    link.click();
+}
+
+document.getElementById("download-vmaf-chart").addEventListener("click", () => {  /* Agrega un evento de clic al botón de descarga del gráfico de VMAF */
+    downloadChart(vmafChart, "sherboa-vmaf.png");
+});
+
+document.getElementById("download-psnr-chart").addEventListener("click", () => {  /* Agrega un evento de clic al botón de descarga del gráfico de PSNR */
+    downloadChart(psnrChart, "sherboa-psnr.png");
+});
+
+document.getElementById("download-ssim-chart").addEventListener("click", () => {  /* Agrega un evento de clic al botón de descarga del gráfico de SSIM */
+    downloadChart(ssimChart, "sherboa-ssim.png");
+});
+/*****************************************************************************************************************************/
+
+
+
+/*****************************************************************************************************************************/
+/* DESCARGA DE ARCHIVO DE DATOS EN FORMATO JSON ******************************************************************************/
+function downloadFile(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+
+    URL.revokeObjectURL(url);
+}
+
+document.getElementById("download-json").addEventListener("click", () => {
+    if (lastAnalysisData === null) {
+        return;
+    }
+
+    const json = JSON.stringify(lastAnalysisData, null, 2);
+
+    downloadFile(
+        json,
+        "sherboa-analysis.json",
+        "application/json"
+    );
+});
+/*****************************************************************************************************************************/
+
+
+
+/*****************************************************************************************************************************/
+/* DESCARGA DE ARCHIVO DE DATOS EN FORMATO CSV ******************************************************************************/
+document.getElementById("download-csv").addEventListener("click", () => {
+    if (lastAnalysisData === null) {
+        return;
+    }
+
+    const rows = [
+        ["section", "metric", "frame", "value"],
+        ["summary", "vmaf_mean", "", lastAnalysisData.vmaf.mean],
+        ["summary", "vmaf_min", "", lastAnalysisData.vmaf.min],
+        ["summary", "vmaf_max", "", lastAnalysisData.vmaf.max],
+        ["summary", "psnr_mean", "", lastAnalysisData.psnr.mean],
+        ["summary", "psnr_min", "", lastAnalysisData.psnr.min],
+        ["summary", "psnr_max", "", lastAnalysisData.psnr.max],
+        ["summary", "ssim_global", "", lastAnalysisData.ssim["global (all)"]],
+        ["summary", "ssim_y", "", lastAnalysisData.ssim.y],
+        ["summary", "ssim_u", "", lastAnalysisData.ssim.u],
+        ["summary", "ssim_v", "", lastAnalysisData.ssim.v]
+    ];
+
+    for (const [metric, values] of [
+        ["vmaf", lastAnalysisData.vmaf.per_frame],
+        ["psnr", lastAnalysisData.psnr.per_frame],
+        ["ssim", lastAnalysisData.ssim.per_frame]
+    ]) {
+        values.forEach((value, index) => {
+            rows.push(["per_frame", metric, index + 1, value]);
+        });
+    }
+
+    const csv = rows
+        .map(row =>
+            row.map(value => {
+                const text = String(value ?? "");
+                return `"${text.replace(/"/g, '""')}"`;
+            }).join(",")
+        )
+        .join("\r\n");
+
+    downloadFile(
+        "\uFEFF" + csv,
+        "sherboa-analysis.csv",
+        "text/csv;charset=utf-8"
+    );
+});
+/*****************************************************************************************************************************/
+
+
+
+/*****************************************************************************************************************************/
+/* DESCARGA DE ARCHIVO DE DATOS EN FORMATO XML ******************************************************************************/
+document.getElementById("download-xml").addEventListener("click", () => {
+    if (lastAnalysisData === null) {
+        return;
+    }
+
+    const data = lastAnalysisData;
+
+    const escapeXml = (value) =>
+        String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&apos;");
+
+    const metricXml = (name, metric) => `
+        <${name}>
+            <mean>${escapeXml(metric.mean)}</mean>
+            <min>${escapeXml(metric.min)}</min>
+            <max>${escapeXml(metric.max)}</max>
+            <per_frame>
+                ${metric.per_frame.map((value, index) => `
+                    <frame number="${index + 1}">${escapeXml(value)}</frame>
+                `).join("")}
+            </per_frame>
+        </${name}>`;
+
+    const ssimFrames = data.ssim.per_frame.map((value, index) => `
+        <frame number="${index + 1}">${escapeXml(value)}</frame>
+    `).join("");
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<sherboa_analysis>
+    <vmaf>
+        ${metricXml("score", data.vmaf)}
+    </vmaf>
+    <psnr>
+        ${metricXml("score", data.psnr)}
+    </psnr>
+    <ssim>
+        <global>${escapeXml(data.ssim["global (all)"])}</global>
+        <y>${escapeXml(data.ssim.y)}</y>
+        <u>${escapeXml(data.ssim.u)}</u>
+        <v>${escapeXml(data.ssim.v)}</v>
+        <per_frame>
+            ${ssimFrames}
+        </per_frame>
+    </ssim>
+</sherboa_analysis>`;
+
+    downloadFile(
+        xml,
+        "sherboa-analysis.xml",
+        "application/xml;charset=utf-8"
+    );
+});
+/*****************************************************************************************************************************/

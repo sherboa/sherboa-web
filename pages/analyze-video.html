@@ -65,15 +65,33 @@
             <div id="vmaf-chart-container" class="chart-container">
                 <canvas id="vmaf-chart"></canvas>
             </div>
+            <button id="download-vmaf-chart" type="button" hidden>
+                download VMAF chart (PNG)
+            </button>
+
 
             <div id="psnr-result"></div>
             <div id="psnr-chart-container" class="chart-container">
                 <canvas id="psnr-chart"></canvas>
             </div>
+            <button id="download-psnr-chart" type="button" hidden>
+                download PSNR chart (PNG)
+            </button>
+
 
             <div id="ssim-result"></div>
             <div id="ssim-chart-container" class="chart-container">
                 <canvas id="ssim-chart"></canvas>
+            </div>
+            <button id="download-ssim-chart" type="button" hidden>
+                download SSIM chart (PNG)
+            </button>
+
+            <div id="download-data-container" hidden>
+                <h3>export analysis data</h3>
+                <button id="download-json" type="button">download JSON</button>
+                <button id="download-csv" type="button">download CSV</button>
+                <button id="download-xml" type="button">download XML</button>
             </div>
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
