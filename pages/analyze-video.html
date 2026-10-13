@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="icon" type="image/x-icon" href="../assets/images/favicon.svg">
-    
+
+    <link rel="canonical" href="https://sherboa.com/pages/analyze-video.html">
     <title>Analyze Video - Sherboa</title>
     <meta
         name="description"
@@ -44,7 +45,8 @@
         <article class="analyze-form">
             <p class="paragraph">
                 compare a reference video against a distorted version.<br>
-                please note: processing time may extend according to videos' lenght.
+                please note: processing time may extend according to videos' lenght.<br>
+                quick reminder: when comparing two identical frames of your videos, the expected metric values are: -> VMAF=100 • PSNR=infinite • SSIM=1.0
             </p>
 
             <form id="vmaf-form" novalidate>
@@ -66,8 +68,8 @@
                 <canvas id="vmaf-chart"></canvas>
             </div>
             <button id="download-vmaf-chart" type="button" hidden>
-                download VMAF chart (PNG)
-            </button>
+                download VMAF chart
+            </button><br><br>
 
 
             <div id="psnr-result"></div>
@@ -75,8 +77,8 @@
                 <canvas id="psnr-chart"></canvas>
             </div>
             <button id="download-psnr-chart" type="button" hidden>
-                download PSNR chart (PNG)
-            </button>
+                download PSNR chart
+            </button><br><br>
 
 
             <div id="ssim-result"></div>
@@ -84,8 +86,8 @@
                 <canvas id="ssim-chart"></canvas>
             </div>
             <button id="download-ssim-chart" type="button" hidden>
-                download SSIM chart (PNG)
-            </button>
+                download SSIM chart
+            </button><br><br>
 
             <div id="download-data-container" hidden>
                 <h3>export analysis data</h3>

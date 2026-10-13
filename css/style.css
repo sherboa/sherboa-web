@@ -7,7 +7,8 @@
 }
 
 
-/* Variables para el tema del sitio web */
+/************************************************************************************/
+/* Variables para el tema del sitio web *********************************************/
 :root {
     /* Backgrounds */
     --bg-primary: linear-gradient(135deg, #0f172a, #1e1b4b, #164e63);  /* Color primario para el fondo */
@@ -27,6 +28,9 @@
     /* Tipografia */
     --font-family: 'IBM Plex Mono', 'Courier New', monospace;  /* Fuente de letra para todo el documento */
 }
+/************************************************************************************/
+
+
 
 html {
     font-family: var(--font-family);  /* Fuente de letra para todo el documento */
@@ -146,8 +150,9 @@ form {
 }
 
 
-/*************************************************************************/
-/* Cards en la pagina How It Works ***************************************/
+
+/************************************************************************************/
+/* Cards en la pagina How It Works **************************************************/
 .product-container {
     display: flex;  /* Utiliza flexbox para organizar los productos */
     flex-direction: row;  /* Alinea los productos en una fila */
@@ -196,11 +201,12 @@ form {
     max-width: 100%;  /* Límite para evitar el desborde si el contenedor falla */
     height: auto;
 }
-/*************************************************************************/
+/************************************************************************************/
 
 
-/*************************************************************************/
-/* Footer ****************************************************************/
+
+/************************************************************************************/
+/* Footer ***************************************************************************/
 footer {
     display: flex;  /* Utiliza flexbox para el diseño del pie de página */
     background-color: var(--bg-nav);
@@ -235,11 +241,12 @@ footer {
     max-width: 100%;  /* Asegura que el logo no exceda el ancho del contenedor */
     object-fit: contain;  /* Ajusta la imagen para que se contenga dentro del contenedor sin distorsionarse */
 }
-/*************************************************************************/
+/************************************************************************************/
 
 
-/*************************************************************************/
-/* Limpieza previa del fieldset ******************************************/
+
+/************************************************************************************/
+/* Limpieza previa del fieldset *****************************************************/
 form fieldset {
     border: none;
     padding: 0;
@@ -300,12 +307,12 @@ form fieldset {
     background-color: var(--bg-active);
     color: var(--text-dark);
 }
-/*************************************************************************/
+/************************************************************************************/
 
 
 
-/*************************************************************************/
-/* Textarea para la pagina Analyze Video *********************************/
+/************************************************************************************/
+/* Textarea para la pagina Analyze Video ********************************************/
 .analyze-form {
     max-width: 50rem;
 }
@@ -347,12 +354,12 @@ form fieldset {
     background-color: var(--bg-active);
     color: var(--text-dark);
 }
-/*************************************************************************/
+/************************************************************************************/
 
 
 
-/*************************************************************************/
-/* Estilos para los resultados de VMAF, PSNR y SSIM **********************/
+/************************************************************************************/
+/* Estilos para los resultados de VMAF, PSNR y SSIM *********************************/
 #result {
     margin-top: 2rem;
     margin-left: 1rem;
@@ -372,7 +379,7 @@ form fieldset {
 }
 
 
-/* Animacion de blinking mientras el analisis de video esta corriendo */
+/* Animacion de blinking en texto de espera mientras el analisis de video esta corriendo */
 .analyzing {
     animation: blink 1.2s ease-in-out infinite;
 }
@@ -385,13 +392,12 @@ form fieldset {
         opacity: 0.25;
     }
 }
-
-/*************************************************************************/
-
+/************************************************************************************/
 
 
-/************************************************************************/
-/* Responsividad para tablets/pantallas medianas ************************/
+
+/************************************************************************************/
+/* Responsividad para tablets/pantallas medianas ************************************/
 @media (max-width: 992px) {
     body {
         font-size: 0.9rem;
@@ -482,4 +488,4 @@ form fieldset {
         }
     }
 }
-/************************************************************************/
+/************************************************************************************/

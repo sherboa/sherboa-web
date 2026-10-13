@@ -53,7 +53,7 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
         document.getElementById("download-data-container").hidden = false;  /* Muestra el contenedor del botón de descarga de datos */
 
 
-        vmafResult.textContent = `VMAF [%]
+        vmafResult.textContent = `VMAF
         mean: ${data.vmaf.mean}
         min: ${data.vmaf.min}
         max: ${data.vmaf.max}`;
@@ -67,7 +67,7 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
             vmafChart = new Chart(ctx, {    /* Crea un nuevo gráfico de VMAF usando Chart.js */
                 type: "line",  /* Tipo de gráfico: línea */
                 data: {
-                    labels: data.vmaf.per_frame.map((_, index) => index + 1),  /* Etiquetas para el eje x: número de frame */
+                    labels: data.vmaf.per_frame.map((_, index) => index + 1),
                     datasets: [{
                         label: "VMAF",
                         data: data.vmaf.per_frame,  /* Datos para el eje y: valores de VMAF por frame */
@@ -81,13 +81,13 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
                         x: {
                             title: {
                                 display: true,
-                                text: "frame"
+                                text: "frame"  /* Etiquetas para el eje x: número de frame */
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: "VMAF [%]"
+                                text: "VMAF"
                             }
                         }
                     }
@@ -100,6 +100,23 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
         }
 
 
+
+
+        const psnrFiniteValues = data.psnr.per_frame.filter(
+            value => typeof value === "number" && Number.isFinite(value)
+        );
+
+        const psnrChartData = data.psnr.per_frame.map(value =>
+            value === "inf" ? null : value
+        );
+
+        const psnrChartMax = psnrFiniteValues.length > 0
+            ? Math.max(...psnrFiniteValues)
+            : 100;
+
+        const psnrYAxisMax = psnrChartMax + 2;
+        const psnrInfiniteMarkerY = psnrYAxisMax - 0.1;
+
         psnrResult.textContent = `PSNR [dB]
         mean: ${data.psnr.mean}
         min: ${data.psnr.min}
@@ -109,18 +126,33 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
 
         const psnrCtx = document.getElementById("psnr-chart");  /* Obtiene el contexto del canvas para dibujar el gráfico de PSNR */
 
+        
         if (psnrChart === null) {
             psnrChart = new Chart(psnrCtx, {  /* Crea un nuevo gráfico de PSNR usando Chart.js */
                 type: "line",  /* Tipo de gráfico: línea */
                 data: {
-                    labels: data.psnr.per_frame.map((_, index) => index + 1),  /* Etiquetas para el eje x: número de frame */
-                    datasets: [{
-                        label: "PSNR",
-                        data: data.psnr.per_frame,  /* Datos para el eje y: valores de PSNR por frame */
-                        borderColor: "red",
-                        backgroundColor: "#BD4C33",
-                        tension: 0.2
-                    }]
+                    labels: data.psnr.per_frame.map((_, index) => index + 1),
+                    datasets: [
+                        {
+                            label: "PSNR [dB]",
+                            data: psnrChartData,
+                            borderColor: "red",
+                            backgroundColor: "#BD4C33",
+                            tension: 0.2,
+                            spanGaps: false
+                        },
+                        {
+                            label: "PSNR infinite",
+                            data: data.psnr.per_frame.map(value =>
+                                value === "inf" ? psnrInfiniteMarkerY : null
+                            ),
+                            showLine: false,
+                            borderColor: "red",
+                            backgroundColor: "#BD4C33",
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -129,23 +161,60 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
                         x: {
                             title: {
                                 display: true,
-                                text: "frame"
+                                text: "frame"  /* Etiquetas para el eje x: número de frame */
                             }
                         },
                         y: {
+                            max: psnrYAxisMax,
                             title: {
                                 display: true,
                                 text: "PSNR [dB]"
                             }
                         }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const originalValue =
+                                        data.psnr.per_frame[context.dataIndex];
+
+                                    if (
+                                        context.dataset.label === "PSNR infinite" &&
+                                        originalValue === "inf"
+                                    ) {
+                                        return "PSNR: inf dB";
+                                    }
+
+                                    return `PSNR: ${context.parsed.y} dB`;
+                                }
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                filter: function(item) {
+                                    return item.text !== "PSNR infinite";
+                                }
+                            }
+                        }
                     }
                 }
             });
-            } else {
-                psnrChart.data.labels = data.psnr.per_frame.map((_, index) => index + 1);
-                psnrChart.data.datasets[0].data = data.psnr.per_frame;
-                psnrChart.update();
-            }
+        } else {
+            psnrChart.data.labels =
+                data.psnr.per_frame.map((_, index) => index + 1);
+
+            psnrChart.data.datasets[0].data = psnrChartData;
+
+            psnrChart.data.datasets[1].data =
+                data.psnr.per_frame.map(value =>
+                    value === "inf" ? psnrInfiniteMarkerY : null
+                );
+
+            psnrChart.options.scales.y.max = psnrYAxisMax;
+            psnrChart.update();
+        }
+
 
         ssimResult.textContent = `SSIM
         global (all): ${data.ssim["global (all)"]}
@@ -162,7 +231,7 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
             ssimChart = new Chart(ssimCtx, {  /* Crea un nuevo gráfico de SSIM usando Chart.js */
                 type: "line",  /* Tipo de gráfico: línea */
                 data: {
-                    labels: data.ssim.per_frame.map((_, index) => index + 1),  /* Etiquetas para el eje x: número de frame */
+                    labels: data.ssim.per_frame.map((_, index) => index + 1),
                     datasets: [{
                         label: "SSIM",
                         data: data.ssim.per_frame,  /* Datos para el eje y: valores de SSIM por frame */
@@ -178,7 +247,7 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
                         x: {
                             title: {
                                 display: true,
-                                text: "frame"
+                                text: "frame"  /* Etiquetas para el eje x: número de frame */
                             }
                         },
                         y: {
@@ -236,26 +305,26 @@ document.getElementById("download-ssim-chart").addEventListener("click", () => {
 
 /*****************************************************************************************************************************/
 /* DESCARGA DE ARCHIVO DE DATOS EN FORMATO JSON ******************************************************************************/
-function downloadFile(content, filename, mimeType) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
+function downloadFile(content, filename, mimeType) {  /* Función para descargar un archivo con el contenido especificado */
+    const blob = new Blob([content], { type: mimeType });  /* Crea un objeto Blob con el contenido y el tipo MIME especificado */
+    const url = URL.createObjectURL(blob);  /* Crea una URL temporal para el objeto Blob */
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    link.click();
+    const link = document.createElement("a");  /* Crea un elemento <a> para descargar el archivo */
+    link.href = url;  /* Establece la URL del objeto Blob como el href del enlace */
+    link.download = filename;  /* Establece el nombre del archivo a descargar */
+    link.click();  /* Simula un clic en el enlace para iniciar la descarga del archivo */
 
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(url);  /* Revoca la URL temporal para liberar memoria */
 }
 
-document.getElementById("download-json").addEventListener("click", () => {
+document.getElementById("download-json").addEventListener("click", () => {  /* Agrega un evento de clic al botón de descarga del archivo JSON */
     if (lastAnalysisData === null) {
         return;
     }
 
-    const json = JSON.stringify(lastAnalysisData, null, 2);
+    const json = JSON.stringify(lastAnalysisData, null, 2);  /* Convierte los datos del último análisis a formato JSON con una sangría de 2 espacios */
 
-    downloadFile(
+    downloadFile(  /* Llama a la función para descargar el archivo JSON */
         json,
         "sherboa-analysis.json",
         "application/json"
@@ -267,12 +336,12 @@ document.getElementById("download-json").addEventListener("click", () => {
 
 /*****************************************************************************************************************************/
 /* DESCARGA DE ARCHIVO DE DATOS EN FORMATO CSV ******************************************************************************/
-document.getElementById("download-csv").addEventListener("click", () => {
+document.getElementById("download-csv").addEventListener("click", () => {  /* Agrega un evento de clic al botón de descarga del archivo CSV */
     if (lastAnalysisData === null) {
         return;
     }
 
-    const rows = [
+    const rows = [  /* Arreglo para almacenar las filas del archivo CSV */
         ["section", "metric", "frame", "value"],
         ["summary", "vmaf_mean", "", lastAnalysisData.vmaf.mean],
         ["summary", "vmaf_min", "", lastAnalysisData.vmaf.min],
@@ -286,18 +355,18 @@ document.getElementById("download-csv").addEventListener("click", () => {
         ["summary", "ssim_v", "", lastAnalysisData.ssim.v]
     ];
 
-    for (const [metric, values] of [
+    for (const [metric, values] of [  // Itera sobre los valores de VMAF, PSNR y SSIM por frame
         ["vmaf", lastAnalysisData.vmaf.per_frame],
         ["psnr", lastAnalysisData.psnr.per_frame],
         ["ssim", lastAnalysisData.ssim.per_frame]
     ]) {
-        values.forEach((value, index) => {
+        values.forEach((value, index) => {  // Itera sobre cada valor por frame y agrega una fila al arreglo de filas
             rows.push(["per_frame", metric, index + 1, value]);
         });
     }
 
-    const csv = rows
-        .map(row =>
+    const csv = rows  // Convierte el arreglo de filas a formato CSV
+        .map(row =>  // Itera sobre cada fila y convierte los valores a texto escapando comillas dobles
             row.map(value => {
                 const text = String(value ?? "");
                 return `"${text.replace(/"/g, '""')}"`;
@@ -305,8 +374,8 @@ document.getElementById("download-csv").addEventListener("click", () => {
         )
         .join("\r\n");
 
-    downloadFile(
-        "\uFEFF" + csv,
+    downloadFile(  // Llama a la función para descargar el archivo CSV
+        "\uFEFF" + csv,  // Agrega un BOM (Byte Order Mark) al inicio del archivo CSV para asegurar la correcta codificación de caracteres
         "sherboa-analysis.csv",
         "text/csv;charset=utf-8"
     );
@@ -317,14 +386,14 @@ document.getElementById("download-csv").addEventListener("click", () => {
 
 /*****************************************************************************************************************************/
 /* DESCARGA DE ARCHIVO DE DATOS EN FORMATO XML ******************************************************************************/
-document.getElementById("download-xml").addEventListener("click", () => {
-    if (lastAnalysisData === null) {
+document.getElementById("download-xml").addEventListener("click", () => {  /* Agrega un evento de clic al botón de descarga del archivo XML */
+    if (lastAnalysisData === null) {  /* Verifica si hay datos del último análisis antes de generar el archivo XML */
         return;
     }
 
-    const data = lastAnalysisData;
+    const data = lastAnalysisData;  /* Variable para almacenar los datos del último análisis realizado */
 
-    const escapeXml = (value) =>
+    const escapeXml = (value) =>  /* Función para escapar caracteres especiales en XML */
         String(value ?? "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -367,7 +436,7 @@ document.getElementById("download-xml").addEventListener("click", () => {
     </ssim>
 </sherboa_analysis>`;
 
-    downloadFile(
+    downloadFile(  /* Llama a la función para descargar el archivo XML */
         xml,
         "sherboa-analysis.xml",
         "application/xml;charset=utf-8"
