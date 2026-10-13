@@ -114,7 +114,7 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
             ? Math.max(...psnrFiniteValues)
             : 100;
 
-        const psnrYAxisMax = psnrChartMax + 2;
+        const psnrYAxisMax = psnrChartMax + 0.2;
         const psnrInfiniteMarkerY = psnrYAxisMax - 0.1;
 
         psnrResult.textContent = `PSNR [dB]
@@ -134,7 +134,7 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
                     labels: data.psnr.per_frame.map((_, index) => index + 1),
                     datasets: [
                         {
-                            label: "PSNR [dB]",
+                            label: "PSNR",
                             data: psnrChartData,
                             borderColor: "red",
                             backgroundColor: "#BD4C33",
