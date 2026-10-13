@@ -114,8 +114,7 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
             ? Math.max(...psnrFiniteValues)
             : 100;
 
-        const psnrYAxisMax = psnrChartMax + 0.2;
-        const psnrInfiniteMarkerY = psnrYAxisMax - 0.1;
+        const psnrInfiniteMarkerY = psnrChartMax;
 
         psnrResult.textContent = `PSNR [dB]
         mean: ${data.psnr.mean}
@@ -165,7 +164,6 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
                             }
                         },
                         y: {
-                            max: psnrYAxisMax,
                             title: {
                                 display: true,
                                 text: "PSNR [dB]"
@@ -179,14 +177,11 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
                                     const originalValue =
                                         data.psnr.per_frame[context.dataIndex];
 
-                                    if (
-                                        context.dataset.label === "PSNR infinite" &&
-                                        originalValue === "inf"
-                                    ) {
-                                        return "PSNR: inf dB";
+                                    if (originalValue === "inf") {
+                                        return "PSNR: inf";
                                     }
 
-                                    return `PSNR: ${context.parsed.y} dB`;
+                                    return `PSNR: ${originalValue} dB`;
                                 }
                             }
                         },
@@ -211,7 +206,6 @@ form.addEventListener("submit", async (event) => {  /* Maneja el evento de enví
                     value === "inf" ? psnrInfiniteMarkerY : null
                 );
 
-            psnrChart.options.scales.y.max = psnrYAxisMax;
             psnrChart.update();
         }
 
