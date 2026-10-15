@@ -31,11 +31,11 @@
         </button>
 
         <ul id="nav-menu">
-            <li><a href="../index.html">home</a></li>
-            <li><a href="./how-it-works.html">how-it-works</a></li>
-            <li><a class="active" href="./analyze-video.html">analyze-video</a></li>
-            <li><a href="./about.html">about</a></li>
-            <li><a href="./contact.html">contact</a></li>
+            <li><a href="../index.html">> home</a></li>
+            <li><a href="./how-it-works.html">> how-it-works</a></li>
+            <li><a class="active" href="./analyze-video.html">> analyze-video</a></li>
+            <li><a href="./about.html">> about</a></li>
+            <li><a href="./contact.html">> contact</a></li>
         </ul>
     </nav>
 
@@ -46,7 +46,7 @@
             <p class="paragraph">
                 compare a reference video against a distorted version.<br>
                 please note: processing time may extend according to videos' lenght.<br>
-                quick reminder: when comparing two identical frames, the expected metric values are -> VMAF=100 • PSNR=infinite • SSIM=1.0
+                keep in mind when comparing two identical frames that the expected metric values are -> VMAF=100 • PSNR=infinite • SSIM=1.0
             </p>
         </article>
 
@@ -56,15 +56,14 @@
                     <label for="reference-video">reference video</label>
                     <input type="file" id="reference-video" name="reference" accept="video/*" required>
                 </div>
-
                 <div class="file-input">
                     <label for="distorted-video">distorted video</label>
                     <input type="file" id="distorted-video" name="distorted" accept="video/*" required>
                 </div>
-
                 <button type="submit">analyze</button>
             </form>
 
+            
             <div id="vmaf-result"></div>
             <div id="vmaf-chart-container" class="chart-container">
                 <canvas id="vmaf-chart"></canvas>
@@ -91,6 +90,7 @@
                 download SSIM chart
             </button><br><br>
 
+
             <div id="download-data-container" hidden>
                 <h3>export analysis data</h3>
                 <button id="download-json" type="button">download JSON</button>
@@ -98,8 +98,8 @@
                 <button id="download-xml" type="button">download XML</button>
             </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="../js/analyze-video.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+            <script type="module" src="../js/analyze-video.js"></script>
         </article>
     </main>
 
@@ -115,6 +115,6 @@
         </p>
     </footer>
 
-    <script src="../js/navbar.js"></script>
+    <script src="../js/navbar.js" defer></script>
 </body>
 </html>
