@@ -1,10 +1,14 @@
 import { updateCharts } from "./charts.js";
 import { setAnalysisData } from "./downloads.js";
+import { initVideoSync } from "./video-sync.js";
 
 
 const API_URL = "https://sherboa-api.duckdns.org";
 
 const form = document.getElementById("vmaf-form");
+const analyzingMessage = document.getElementById("analyzing-message");
+
+const videoSync = initVideoSync();  // Inicializa los controles de sincronización de video
 
 const vmafResult = document.getElementById("vmaf-result");  // Elemento para mostrar los resultados de VMAF
 const psnrResult = document.getElementById("psnr-result");  // Elemento para mostrar los resultados de PSNR
@@ -23,8 +27,8 @@ form.addEventListener("submit", async (event) => {  // Maneja el evento de enví
         return;
     }
 
-    vmafResult.textContent = "analyzing, please wait...";
-    vmafResult.classList.add("analyzing");
+    analyzingMessage.textContent = "analyzing, please wait...";
+    analyzingMessage.classList.add("analyzing");
 
     const formData = new FormData();  // Crea un objeto FormData para enviar los archivos de video al servidor 
     formData.append("reference", referenceVideo);  // Agrega el archivo de video de referencia al FormData 
@@ -72,10 +76,11 @@ form.addEventListener("submit", async (event) => {  // Maneja el evento de enví
 
     }
     catch (error) {
-            console.error(error);
-            vmafResult.textContent = "unable to connect to the server.";
+        console.error(error);
+        vmafResult.textContent = "unable to connect to the server.";
     }
     finally {
-            vmafResult.classList.remove("analyzing");
+        vmafResult.classList.remove("analyzing");
+        analyzingMessage.textContent = "";
     }
 });

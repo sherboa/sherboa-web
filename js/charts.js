@@ -8,6 +8,9 @@ const vmafChartContainer = document.getElementById("vmaf-chart-container");  // 
 const psnrChartContainer = document.getElementById("psnr-chart-container");  // Contenedor del gráfico de PSNR
 const ssimChartContainer = document.getElementById("ssim-chart-container");  // Contenedor del gráfico de SSIM
 
+//****************************************************************************************************************************
+// CURVAS DE VMAF, PSNR Y SSIM POR FRAME
+//****************************************************************************************************************************
 export function updateCharts(data) {
     // VMAF
     vmafChartContainer.style.display = "block";
@@ -84,7 +87,7 @@ export function updateCharts(data) {
                         label: "PSNR",
                         data: psnrChartData,
                         borderColor: "red",
-                        backgroundColor: "#BD4C33",
+                        backgroundColor: "#6e1406",
                         tension: 0.2,
                         spanGaps: false,
                         pointRadius: 0,
@@ -97,8 +100,8 @@ export function updateCharts(data) {
                         ),
                         showLine: false,
                         borderColor: "red",
-                        backgroundColor: "#BD4C33",
-                        pointRadius: 0,
+                        backgroundColor: "#6e1406",
+                        pointRadius: 4,
                         pointHoverRadius: 4
                     }
                 ]
@@ -208,9 +211,9 @@ export function updateCharts(data) {
 }
 
 
-
 //****************************************************************************************************************************
-// DESCARGA DE GRAFICOS EN FORMATO PNG ***************************************************************************************
+// DESCARGA DE GRAFICOS EN FORMATO PNG 
+//****************************************************************************************************************************
 function downloadChart(chart, filename) {  // Función para descargar el gráfico como imagen
     if (chart === null) {
         return;
@@ -233,4 +236,3 @@ document.getElementById("download-psnr-chart").addEventListener("click", () => {
 document.getElementById("download-ssim-chart").addEventListener("click", () => {  // Agrega un evento de clic al botón de descarga del gráfico de SSIM
     downloadChart(ssimChart, "sherboa-ssim.png");
 });
-//****************************************************************************************************************************

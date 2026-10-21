@@ -1,6 +1,6 @@
 # Sherboa Web
 
-Frontend for **Sherboa**, a web-based tool for comparing video quality using objective video quality metrics.
+Frontend for **Sherboa**, a web-based tool for comparing video quality using objective quality metrics.
 
 ## Overview
 
@@ -15,7 +15,7 @@ The application is built as a lightweight static web frontend and is deployed at
 - Upload reference and distorted video files
 - Run video quality analysis through the Sherboa Engine API
 - Display VMAF, PSNR, and SSIM results
-- Visualize per-frame VMAF and PSNR values
+- Visualize per-frame VMAF, PSNR and SSIM values
 - Display average, minimum, and maximum metric values
 - Download analysis results
 - Responsive interface for desktop and mobile devices
@@ -38,7 +38,10 @@ sherboa-web/
 ├── css/
 │   └── style.css           # Main stylesheet
 ├── js/
-│   └── analyze-video.js    # Video analysis and API interaction
+│   ├── analyze-video.js    # Video analysis and API interaction
+│   ├── downloads.js
+│   ├── charts.js
+│   └── navbar.js
 ├── pages/
 │   ├── about.html
 │   ├── analyze-video.html

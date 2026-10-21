@@ -74,13 +74,16 @@ h1 {
 }
 
 h2 {
-    margin: 1.5rem 1.5rem 1rem;  /* Espacio del título secundario */
+    margin: 1.5rem 1.5rem 1rem;  /* Espacio del título #2 */
 }
 
 h3 {
-    margin: 1rem 1rem 1rem;  /* Espacio del título terciario */
+    margin: 1rem 1rem 1rem;  /* Espacio del título #3 */
 }
 
+h4 {
+    margin: 1rem 0rem 1rem;  /* Espacio del título #4 */
+}
 
 .menu-toggle {
     display: none;
@@ -246,7 +249,7 @@ footer {
 
 
 /************************************************************************************/
-/* Limpieza previa del fieldset *****************************************************/
+/* Ajuste fieldset del formulario de Contact ****************************************/
 form fieldset {
     border: none;
     padding: 0;
@@ -353,6 +356,31 @@ form fieldset {
 .analyze-form button:hover {
     background-color: var(--bg-active);
     color: var(--text-dark);
+}
+/************************************************************************************/
+
+
+/************************************************************************************/
+/* Previsualizaciones de referencia y distorsionado *********************************/
+.sync-preview {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.sync-video {
+    min-width: 0;
+}
+
+.sync-video video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    background-color: #020617;
+    border: 1px solid var(--border-accent);
+    border-radius: 0.5rem;
 }
 /************************************************************************************/
 
@@ -466,6 +494,10 @@ form fieldset {
         background-color: var(--bg-active);
         outline-offset: 0.5px;
         border-radius: 2px;
+    }
+
+    .sync-preview {
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 

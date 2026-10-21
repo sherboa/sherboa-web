@@ -6,7 +6,8 @@ export function setAnalysisData(data) {
 
 
 //****************************************************************************************************************************
-// DESCARGA DE ARCHIVO DE DATOS EN FORMATO JSON ******************************************************************************
+// DESCARGA DE ARCHIVO DE DATOS EN FORMATO JSON
+//****************************************************************************************************************************
 function downloadFile(content, filename, mimeType) {  // Función para descargar un archivo con el contenido especificado
     const blob = new Blob([content], { type: mimeType });  // Crea un objeto Blob con el contenido y el tipo MIME especificado
     const url = URL.createObjectURL(blob);  // Crea una URL temporal para el objeto Blob
@@ -32,12 +33,12 @@ document.getElementById("download-json").addEventListener("click", () => {  // A
         "application/json"
     );
 });
-//****************************************************************************************************************************
 
 
 
 //****************************************************************************************************************************
-// DESCARGA DE ARCHIVO DE DATOS EN FORMATO CSV *******************************************************************************
+// DESCARGA DE ARCHIVO DE DATOS EN FORMATO CSV
+//****************************************************************************************************************************
 document.getElementById("download-csv").addEventListener("click", () => {  // Agrega un evento de clic al botón de descarga del archivo CSV 
     if (lastAnalysisData === null) {
         return;
@@ -82,12 +83,12 @@ document.getElementById("download-csv").addEventListener("click", () => {  // Ag
         "text/csv;charset=utf-8"
     );
 });
-//****************************************************************************************************************************
 
 
 
 //****************************************************************************************************************************
-// DESCARGA DE ARCHIVO DE DATOS EN FORMATO XML *******************************************************************************
+// DESCARGA DE ARCHIVO DE DATOS EN FORMATO XML
+//****************************************************************************************************************************
 document.getElementById("download-xml").addEventListener("click", () => {  // Agrega un evento de clic al botón de descarga del archivo XML 
     if (lastAnalysisData === null) {  // Verifica si hay datos del último análisis antes de generar el archivo XML 
         return;
@@ -144,4 +145,3 @@ document.getElementById("download-xml").addEventListener("click", () => {  // Ag
         "application/xml;charset=utf-8"
     );
 });
-//****************************************************************************************************************************
