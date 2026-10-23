@@ -382,6 +382,21 @@ form fieldset {
     border: 1px solid var(--border-accent);
     border-radius: 0.5rem;
 }
+
+.sync-thumbnail {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    background-color: #020617;
+    border: 1px solid var(--border-accent);
+    border-radius: 0.5rem;
+}
+
+.sync-video video[hidden],
+.sync-thumbnail[hidden] {
+    display: none;
+}
 /************************************************************************************/
 
 

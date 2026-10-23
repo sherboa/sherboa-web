@@ -2,6 +2,17 @@ let vmafChart = null;  // Variable para almacenar la instancia del gráfico de V
 let psnrChart = null;  // Variable para almacenar la instancia del gráfico de PSNR
 let ssimChart = null;  // Variable para almacenar la instancia del gráfico de VMAF
 
+let onFrameSelected = null;
+
+function handleChartClick(event, activeElements) {
+    if (!activeElements.length || typeof onFrameSelected !== "function") {
+        return;
+    }
+
+    const frameIndex = activeElements[0].index;
+    onFrameSelected(frameIndex);
+}
+
 let latestPsnrPerFrame = [];
 
 const vmafChartContainer = document.getElementById("vmaf-chart-container");  // Contenedor del gráfico de VMAF
@@ -11,7 +22,9 @@ const ssimChartContainer = document.getElementById("ssim-chart-container");  // 
 //****************************************************************************************************************************
 // CURVAS DE VMAF, PSNR Y SSIM POR FRAME
 //****************************************************************************************************************************
-export function updateCharts(data) {
+export function updateCharts(data, frameSelectionHandler = null) {
+    onFrameSelected = frameSelectionHandler;
+
     // VMAF
     vmafChartContainer.style.display = "block";
 
@@ -33,6 +46,7 @@ export function updateCharts(data) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: handleChartClick,
                 scales: {
                     x: {
                         title: {
@@ -87,7 +101,7 @@ export function updateCharts(data) {
                         label: "PSNR",
                         data: psnrChartData,
                         borderColor: "red",
-                        backgroundColor: "#6e1406",
+                        backgroundColor: "#5f0f03",
                         tension: 0.2,
                         spanGaps: false,
                         pointRadius: 0,
@@ -100,7 +114,7 @@ export function updateCharts(data) {
                         ),
                         showLine: false,
                         borderColor: "red",
-                        backgroundColor: "#6e1406",
+                        backgroundColor: "#5f0f03",
                         pointRadius: 4,
                         pointHoverRadius: 4
                     }
@@ -109,6 +123,7 @@ export function updateCharts(data) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: handleChartClick,
                 scales: {
                     x: {
                         title: {
@@ -185,6 +200,7 @@ export function updateCharts(data) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: handleChartClick,
                 scales: {
                     x: {
                         title: {

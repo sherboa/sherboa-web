@@ -41,6 +41,7 @@ sherboa-web/
 │   ├── analyze-video.js    # Video analysis and API interaction
 │   ├── downloads.js
 │   ├── charts.js
+│   ├── video-sync.js
 │   └── navbar.js
 ├── pages/
 │   ├── about.html

@@ -9,12 +9,68 @@ const form = document.getElementById("vmaf-form");
 const analyzingMessage = document.getElementById("analyzing-message");
 
 const videoSync = initVideoSync();  // Inicializa los controles de sincronización de video
+const referencePreview = document.getElementById("reference-preview");
+const distortedPreview = document.getElementById("distorted-preview");
+const referenceThumbnail = document.getElementById("reference-thumbnail");
+const distortedThumbnail = document.getElementById("distorted-thumbnail");
 
+referenceThumbnail.addEventListener("error", () => {
+    referenceThumbnail.hidden = true;
+});
+
+distortedThumbnail.addEventListener("error", () => {
+    distortedThumbnail.hidden = true;
+});
+
+const referenceTime = document.getElementById("reference-time");
+const distortedTime = document.getElementById("distorted-time");
 const vmafResult = document.getElementById("vmaf-result");  // Elemento para mostrar los resultados de VMAF
 const psnrResult = document.getElementById("psnr-result");  // Elemento para mostrar los resultados de PSNR
 const ssimResult = document.getElementById("ssim-result");  // Elemento para mostrar los resultados de SSIM
 
 let lastAnalysisData = null;  // Variable para almacenar los datos del último análisis realizado 
+
+
+function showThumbnails(analysisData, timestamp = 0) {
+    if (!analysisData?.thumbnails_available || !analysisData.analysis_id) {
+        return;
+    }
+
+    const thumbnailIndex = Math.max(1, Math.round(timestamp) + 1);
+    const thumbnailFilename = `thumbnail_${String(thumbnailIndex).padStart(4, "0")}.jpg`;
+    const thumbnailBaseUrl = `${API_URL}/thumbnails/${analysisData.analysis_id}`;
+
+    referenceThumbnail.src = `${thumbnailBaseUrl}/reference/${thumbnailFilename}`;
+    distortedThumbnail.src = `${thumbnailBaseUrl}/distorted/${thumbnailFilename}`;
+
+    referenceThumbnail.hidden = false;
+    distortedThumbnail.hidden = false;
+
+    referencePreview.hidden = true;
+    distortedPreview.hidden = true;
+
+    referenceTime.textContent = formatTimestamp(timestamp);
+    distortedTime.textContent = formatTimestamp(timestamp);
+}
+
+function formatTimestamp(seconds) {
+    const safeSeconds = Math.max(0, seconds);
+    const minutes = Math.floor(safeSeconds / 60);
+    const remainingSeconds = (safeSeconds % 60).toFixed(3);
+
+    return `${String(minutes).padStart(2, "0")}:${String(Number(remainingSeconds).toFixed(3)).padStart(6, "0")}`;
+}
+
+function resetThumbnails() {
+    referenceThumbnail.removeAttribute("src");
+    distortedThumbnail.removeAttribute("src");
+
+    referenceThumbnail.hidden = true;
+    distortedThumbnail.hidden = true;
+
+    referencePreview.hidden = false;
+    distortedPreview.hidden = false;
+}
 
 form.addEventListener("submit", async (event) => {  // Maneja el evento de envío del formulario 
     event.preventDefault();
@@ -33,6 +89,8 @@ form.addEventListener("submit", async (event) => {  // Maneja el evento de enví
     const formData = new FormData();  // Crea un objeto FormData para enviar los archivos de video al servidor 
     formData.append("reference", referenceVideo);  // Agrega el archivo de video de referencia al FormData 
     formData.append("distorted", distortedVideo);  // Agrega el archivo de video distorsionado al FormData 
+
+    resetThumbnails();
 
     try {
         const response = await fetch(`${API_URL}/vmaf`, {  // Envía una solicitud POST al servidor para analizar los videos 
@@ -71,9 +129,19 @@ form.addEventListener("submit", async (event) => {  // Maneja el evento de enví
         u: ${data.ssim.u}
         v: ${data.ssim.v}`;
 
-        updateCharts(data);
+        updateCharts(data, (frameIndex) => {
+            const fps = Number(data.video?.fps);
 
+            if (!Number.isFinite(fps) || fps <= 0) {
+                return;
+            }
 
+            showThumbnails(data, frameIndex / fps);
+        });
+
+        if (data.thumbnails_available) {
+            showThumbnails(data, 0);
+        }
     }
     catch (error) {
         console.error(error);

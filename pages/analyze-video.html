@@ -65,24 +65,23 @@
                     <h4 id="sync-title">video synchronization</h3>
                     <p>adjust the distorted video against the reference before analyzing</p>
 
-                    <div class="sync-preview">
-                        <div class="sync-video">
-                            <h4>reference video</h4>
-                            <video id="reference-preview" controls preload="metadata"></video>
-                            <p id="reference-time">00:00.000</p>
-                        </div>
+                    <div class="sync-video">
+                        <h4>reference video</h4>
+                        <video id="reference-preview" controls preload="metadata"></video>
+                        <img id="reference-thumbnail" class="sync-thumbnail" alt="Reference video thumbnail" hidden>
+                        <p id="reference-time">00:00.000</p>
+                    </div>
 
-                        <div class="sync-video">
-                            <h4>distorted video</h4>
-                            <video id="distorted-preview" controls preload="metadata"></video>
-                            <p id="distorted-time">00:00.000</p>
-                        </div>
+                    <div class="sync-video">
+                        <h4>distorted video</h4>
+                        <video id="distorted-preview" controls preload="metadata"></video>
+                        <img id="distorted-thumbnail" class="sync-thumbnail" alt="Distorted video thumbnail" hidden>
+                        <p id="distorted-time">00:00.000</p>
                     </div>
 
                     <div class="sync-controls">
                         <label for="sync-offset">distorted video offset</label>
                         <input type="range" id="sync-offset" min="0" max="0" step="0.001" value="0" disabled>
-
                         <p>
                             offset:
                             <output id="sync-offset-value" for="sync-offset">0.000 s</output>
@@ -140,6 +139,7 @@
                 <button id="download-json" type="button">download JSON</button>
                 <button id="download-csv" type="button">download CSV</button>
                 <button id="download-xml" type="button">download XML</button>
+                <br><br><br>
             </div>
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
