@@ -62,21 +62,21 @@
                 </div>
 
                 <section id="sync-section" class="sync-section" aria-labelledby="sync-title">
-                    <h4 id="sync-title">video synchronization</h3>
-                    <p>adjust the distorted video against the reference before analyzing</p>
+                    <h4 id="sync-title">video synchronization</h4>
+                    <p>inspect the reference and distorted frames and adjust the displayed offset</p>
 
-                    <div class="sync-video">
-                        <h4>reference video</h4>
-                        <video id="reference-preview" controls preload="metadata"></video>
-                        <img id="reference-thumbnail" class="sync-thumbnail" alt="Reference video thumbnail" hidden>
-                        <p id="reference-time">00:00.000</p>
-                    </div>
+                    <div class="sync-preview">
+                        <div class="sync-video">
+                            <h4>reference video</h4>
+                            <img id="reference-thumbnail" class="sync-thumbnail" alt="Reference video thumbnail" hidden>
+                            <p id="reference-time">00:00.000</p>
+                        </div>
 
-                    <div class="sync-video">
-                        <h4>distorted video</h4>
-                        <video id="distorted-preview" controls preload="metadata"></video>
-                        <img id="distorted-thumbnail" class="sync-thumbnail" alt="Distorted video thumbnail" hidden>
-                        <p id="distorted-time">00:00.000</p>
+                        <div class="sync-video">
+                            <h4>distorted video</h4>
+                            <img id="distorted-thumbnail" class="sync-thumbnail" alt="Distorted video thumbnail" hidden>
+                            <p id="distorted-time">00:00.000</p>
+                        </div>
                     </div>
 
                     <div class="sync-controls">

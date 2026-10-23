@@ -361,7 +361,7 @@ form fieldset {
 
 
 /************************************************************************************/
-/* Previsualizaciones de referencia y distorsionado *********************************/
+/* Previsualizaciones de videos referencia y distorsionado **************************/
 .sync-preview {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -371,16 +371,6 @@ form fieldset {
 
 .sync-video {
     min-width: 0;
-}
-
-.sync-video video {
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: contain;
-    background-color: #020617;
-    border: 1px solid var(--border-accent);
-    border-radius: 0.5rem;
 }
 
 .sync-thumbnail {
@@ -393,9 +383,29 @@ form fieldset {
     border-radius: 0.5rem;
 }
 
-.sync-video video[hidden],
 .sync-thumbnail[hidden] {
     display: none;
+}
+
+.sync-video p {
+    margin-top: 0.5rem;
+}
+
+.sync-controls {
+    width: 100%;
+    margin-top: 1.5rem;
+}
+
+.sync-controls input[type="range"] {
+    display: block;
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+.sync-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 /************************************************************************************/
 
