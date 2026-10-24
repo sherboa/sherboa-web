@@ -23,18 +23,19 @@ const ssimResult = document.getElementById("ssim-result");
 // 2. Estado de la sincronización y las miniaturas.
 // ---------------------------------------------------------
 
-let currentAnalysisData = null;
+let preparedVideoData = null;
+let preparationRequestId = 0;
 
 // Inicializa los controles de sincronización; el callback actualiza las miniaturas cuando cambia el offset o el timestamp
 const videoSync = initVideoSync({
     onChange(syncState) {
-        if (!syncState || !currentAnalysisData) {
+        if (!syncState || !preparedVideoData) {
             hideThumbnails();
             return;
         }
 
         showThumbnails(
-            currentAnalysisData,
+            preparedVideoData,
             syncState.referenceTime,
             syncState.distortedTime,
             syncState.distortedInRange
@@ -66,12 +67,7 @@ function getThumbnailFilename(timestamp) {
     return `thumbnail_${String(thumbnailIndex).padStart(4, "0")}.jpg`;
 }
 
-function showThumbnails(  // Actualiza las miniaturas de referencia y distorsionado según los timestamps seleccionados
-    analysisData,
-    referenceTimestamp,
-    distortedTimestamp,
-    distortedInRange
-) {
+function showThumbnails(analysisData, referenceTimestamp, distortedTimestamp, distortedInRange) {
     if (
         !analysisData?.thumbnails_available ||
         !analysisData.analysis_id
@@ -110,6 +106,100 @@ function showThumbnails(  // Actualiza las miniaturas de referencia y distorsion
     distortedThumbnail.hidden = false;
 }
 
+
+
+async function prepareVideos() {
+    const referenceVideo =
+        document.getElementById("reference-video").files[0];
+
+    const distortedVideo =
+        document.getElementById("distorted-video").files[0];
+
+    const requestId = ++preparationRequestId;  // Cada selección invalida las solicitudes de preparación anteriores
+
+    preparedVideoData = null;
+    hideThumbnails();
+
+    if (videoSync) {
+        videoSync.clearMetadata();
+    }
+
+    if (!referenceVideo || !distortedVideo) {
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("reference", referenceVideo);
+    formData.append("distorted", distortedVideo);
+
+    try {
+        const response = await fetch(`${API_URL}/prepare`, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (requestId !== preparationRequestId) {  // Ignora respuestas correspondientes a una selección anterior
+            return;
+        }
+
+        if (!response.ok) {
+            console.error(
+                "Video preparation failed:",
+                data.detail || "unknown error"
+            );
+            return;
+        }
+
+        preparedVideoData = data;
+
+        const referenceDuration = Number(data.video?.duration);
+        const distortedDuration = Number(data.distorted_video?.duration);
+        const referenceFps = Number(data.video?.fps);
+
+        if (
+            videoSync &&
+            Number.isFinite(referenceDuration) &&
+            referenceDuration > 0 &&
+            Number.isFinite(distortedDuration) &&
+            distortedDuration > 0
+        ) {
+            videoSync.setVideoMetadata({
+                referenceDuration,
+                distortedDuration,
+                fps: referenceFps
+            });
+
+            videoSync.setReferenceTime(0);
+        } else {
+            console.warn(
+                "Prepared video metadata is incomplete; synchronization controls remain disabled."
+            );
+        }
+    } catch (error) {
+        if (requestId === preparationRequestId) {
+            console.error("Unable to prepare videos:", error);
+        }
+    }
+}
+
+// ---------------------------------------------------------
+// 4. Preparar los videos cuando se seleccionan ambos archivos.
+// ---------------------------------------------------------
+
+document.getElementById("reference-video").addEventListener(
+    "change",
+    prepareVideos
+);
+
+document.getElementById("distorted-video").addEventListener(
+    "change",
+    prepareVideos
+);
+
+
+
 referenceThumbnail.addEventListener("error", () => {  // Si una miniatura no está disponible, su error no invalida el análisis de calidad
     referenceThumbnail.hidden = true;
 });
@@ -119,7 +209,7 @@ distortedThumbnail.addEventListener("error", () => {
 });
 
 // ---------------------------------------------------------
-// 4. Formato de timestamps.
+// 5. Formato de timestamps.
 // ---------------------------------------------------------
 
 function formatTimestamp(seconds) {
@@ -133,7 +223,7 @@ function formatTimestamp(seconds) {
 }
 
 // ---------------------------------------------------------
-// 5. Ejecutar el análisis.
+// 6. Ejecutar el análisis.
 // ---------------------------------------------------------
 
 form.addEventListener("submit", async (event) => {
@@ -150,13 +240,7 @@ form.addEventListener("submit", async (event) => {
         return;
     }
 
-    // Se descartan las miniaturas y los metadatos del análisis anterior
-    currentAnalysisData = null;
-    hideThumbnails();
-
-    if (videoSync) {
-        videoSync.clearMetadata();
-    }
+    vmafResult.textContent = "";  // Se limpia el mensaje anterior cuando ambos videos ya estan seleccionados
 
     analyzingMessage.textContent = "analyzing, please wait...";
     analyzingMessage.classList.add("analyzing");
@@ -216,37 +300,12 @@ form.addEventListener("submit", async (event) => {
         });
 
 
-        // La sincronización necesita las duraciones de ambos videos; si la API todavía no devuelve los metadatos del distorsionado, se mantienen los resultados del análisis, pero no se habilita el offset.
-        const referenceDuration = Number(data.video?.duration);
-        const distortedDuration = Number(data.distorted_video?.duration);
-        const referenceFps = Number(data.video?.fps);
-
-        if (
-            videoSync &&
-            Number.isFinite(referenceDuration) &&
-            referenceDuration > 0 &&
-            Number.isFinite(distortedDuration) &&
-            distortedDuration > 0
-        ) {
-            currentAnalysisData = data;
-
-            videoSync.setVideoMetadata({
-                referenceDuration,
-                distortedDuration,
-                fps: referenceFps
-            });
-
-            videoSync.setReferenceTime(0);  // Presenta las miniaturas inicialmente desde el segundo cero
-        } else {
-            hideThumbnails();
-
-            if (!data.distorted_video?.duration) {
-                console.warn(
-                    "The API response does not include distorted video duration. Synchronization controls remain disabled."
-                );
-            }
+        // La preparación ya contiene los metadatos y el analysis_id de las miniaturas; la respuesta de /vmaf se utiliza exclusivamente para las métricas
+        if (videoSync && preparedVideoData) {
+            videoSync.setReferenceTime(0);
         }
     }
+
     catch (error) {
         console.error(error);
         vmafResult.textContent = "unable to connect to the server.";

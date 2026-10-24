@@ -431,11 +431,19 @@ form fieldset {
     height: clamp(300px, 40vh, 500px);  /* Ajusta la altura del gráfico de manera responsiva */
 }
 
+#analyzing-message,
+#download-vmaf-chart,
+#download-psnr-chart,
+#download-ssim-chart,
+#download-data-container {
+    margin-left: 1rem;
+}
 
 /* Animacion de blinking en texto de espera mientras el analisis de video esta corriendo */
 .analyzing {
     animation: blink 1.2s ease-in-out infinite;
 }
+
 
 @keyframes blink {
     0%, 100% {
