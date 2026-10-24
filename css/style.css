@@ -357,6 +357,10 @@ form fieldset {
     background-color: var(--bg-active);
     color: var(--text-dark);
 }
+
+.analysys-title {
+    margin-left: 0rem;
+}
 /************************************************************************************/
 
 

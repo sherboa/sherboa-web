@@ -14,6 +14,7 @@ const analyzingMessage = document.getElementById("analyzing-message");
 
 const referenceThumbnail = document.getElementById("reference-thumbnail");
 const distortedThumbnail = document.getElementById("distorted-thumbnail");
+const thumbnailsMessage = document.getElementById("thumbnails-message");
 
 const vmafResult = document.getElementById("vmaf-result");
 const psnrResult = document.getElementById("psnr-result");
@@ -119,6 +120,8 @@ async function prepareVideos() {
 
     preparedVideoData = null;
     hideThumbnails();
+    thumbnailsMessage.hidden = true;
+    thumbnailsMessage.textContent = "";
 
     if (videoSync) {
         videoSync.clearMetadata();
@@ -127,6 +130,9 @@ async function prepareVideos() {
     if (!referenceVideo || !distortedVideo) {
         return;
     }
+
+    thumbnailsMessage.textContent = "capturing thumbnails, please wait...";
+    thumbnailsMessage.hidden = false;
 
     const formData = new FormData();
     formData.append("reference", referenceVideo);
@@ -146,13 +152,19 @@ async function prepareVideos() {
 
         if (!response.ok) {
             console.error(
-                "Video preparation failed:",
+                "video preparation failed:",
                 data.detail || "unknown error"
             );
+
+            thumbnailsMessage.textContent =
+                "thumbnail capture failed, please check the videos and try again.";
             return;
         }
 
         preparedVideoData = data;
+
+        thumbnailsMessage.hidden = true;
+        thumbnailsMessage.textContent = "";
 
         const referenceDuration = Number(data.video?.duration);
         const distortedDuration = Number(data.distorted_video?.duration);
@@ -174,12 +186,20 @@ async function prepareVideos() {
             videoSync.setReferenceTime(0);
         } else {
             console.warn(
-                "Prepared video metadata is incomplete; synchronization controls remain disabled."
+                "prepared video metadata is incomplete; synchronization controls remain disabled."
             );
+
+            thumbnailsMessage.textContent =
+                "video preparation incomplete, please check the selected videos and try again.";
+            thumbnailsMessage.hidden = false;
         }
     } catch (error) {
         if (requestId === preparationRequestId) {
-            console.error("Unable to prepare videos:", error);
+            console.error("unable to prepare videos:", error);
+
+            thumbnailsMessage.textContent =
+                "unable to capture thumbnails, please check your connection and try again.";
+            thumbnailsMessage.hidden = false;
         }
     }
 }
@@ -239,8 +259,6 @@ form.addEventListener("submit", async (event) => {
         vmafResult.textContent = "please select both videos.";
         return;
     }
-
-    vmafResult.textContent = "";  // Se limpia el mensaje anterior cuando ambos videos ya estan seleccionados
 
     analyzingMessage.textContent = "analyzing, please wait...";
     analyzingMessage.classList.add("analyzing");

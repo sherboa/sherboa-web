@@ -44,9 +44,9 @@
         
         <article>
             <p class="paragraph">
-                compare a reference video against a distorted version.<br>
-                please note: processing time may extend according to videos' lenght.<br>
-                keep in mind when comparing two identical frames that the expected metric values are -> VMAF=100 • PSNR=infinite • SSIM=1.0
+                upload your video pair and, if necessary, manually align the distorted one by moving it forward frame by frame until both videos match.<br>
+                keep in mind when comparing two identical frames that the expected metric values are -> VMAF=100 • PSNR=infinite • SSIM=1.0<br>
+                please note: processing time may extend according to videos' lenght.
             </p>
         </article>
 
@@ -64,6 +64,7 @@
                 <section id="sync-section" class="sync-section" aria-labelledby="sync-title">
                     <h4 id="sync-title">video synchronization</h4>
                     <p>inspect the reference and distorted frames and adjust the displayed offset.</p>
+                    <p id="thumbnails-message" role="status" aria-live="polite" hidden></p>
 
                     <div class="sync-preview">
                         <div class="sync-video">
@@ -135,7 +136,7 @@
 
 
             <div id="download-data-container" hidden>
-                <h3>export analysis data</h3>
+                <h3 class="analysys-title">export analysis data</h3>
                 <button id="download-json" type="button">download JSON</button>
                 <button id="download-csv" type="button">download CSV</button>
                 <button id="download-xml" type="button">download XML</button>
