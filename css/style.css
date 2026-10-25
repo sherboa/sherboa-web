@@ -443,8 +443,9 @@ form fieldset {
     margin-left: 1rem;
 }
 
-/* Animacion de blinking en texto de espera mientras el analisis de video esta corriendo */
-.analyzing {
+/* Animacion de blinking en textos de espera */
+.analyzing,
+#thumbnails-message {
     animation: blink 1.2s ease-in-out infinite;
 }
 
@@ -457,6 +458,7 @@ form fieldset {
         opacity: 0.25;
     }
 }
+
 /************************************************************************************/
 
 

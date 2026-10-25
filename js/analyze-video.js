@@ -122,6 +122,7 @@ async function prepareVideos() {
     hideThumbnails();
     thumbnailsMessage.hidden = true;
     thumbnailsMessage.textContent = "";
+    thumbnailsMessage.classList.remove("blinking");
 
     if (videoSync) {
         videoSync.clearMetadata();
@@ -133,6 +134,7 @@ async function prepareVideos() {
 
     thumbnailsMessage.textContent = "capturing thumbnails, please wait...";
     thumbnailsMessage.hidden = false;
+    thumbnailsMessage.classList.add("blinking");
 
     const formData = new FormData();
     formData.append("reference", referenceVideo);
@@ -158,6 +160,7 @@ async function prepareVideos() {
 
             thumbnailsMessage.textContent =
                 "thumbnail capture failed, please check the videos and try again.";
+            thumbnailsMessage.classList.remove("blinking");
             return;
         }
 
@@ -165,6 +168,7 @@ async function prepareVideos() {
 
         thumbnailsMessage.hidden = true;
         thumbnailsMessage.textContent = "";
+        thumbnailsMessage.classList.remove("blinking");
 
         const referenceDuration = Number(data.video?.duration);
         const distortedDuration = Number(data.distorted_video?.duration);
@@ -191,6 +195,7 @@ async function prepareVideos() {
 
             thumbnailsMessage.textContent =
                 "video preparation incomplete, please check the selected videos and try again.";
+            thumbnailsMessage.classList.remove("blinking");
             thumbnailsMessage.hidden = false;
         }
     } catch (error) {
@@ -199,6 +204,7 @@ async function prepareVideos() {
 
             thumbnailsMessage.textContent =
                 "unable to capture thumbnails, please check your connection and try again.";
+            thumbnailsMessage.classList.remove("blinking");
             thumbnailsMessage.hidden = false;
         }
     }
