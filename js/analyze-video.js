@@ -120,6 +120,9 @@ async function prepareVideos() {
 
     preparedVideoData = null;
     hideThumbnails();
+    if (vmafResult.textContent === "please select both videos.") {
+        vmafResult.textContent = "";
+    }
     thumbnailsMessage.hidden = true;
     thumbnailsMessage.textContent = "";
     thumbnailsMessage.classList.remove("blinking");
@@ -272,6 +275,7 @@ form.addEventListener("submit", async (event) => {
     const formData = new FormData();
     formData.append("reference", referenceVideo);
     formData.append("distorted", distortedVideo);
+    formData.append("offset", videoSync ? videoSync.getOffset() : 0);
 
     try {
         const response = await fetch(`${API_URL}/vmaf`, {
