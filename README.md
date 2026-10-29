@@ -70,7 +70,7 @@ The frontend does not perform the video quality analysis itself; it is responsib
 The frontend communicates with the Sherboa Engine API at:
 
 ```text
-https://sherboa-api.duckdns.org
+https://api.sherboa.com
 ```
 
 The API endpoint is configured in:

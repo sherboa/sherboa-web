@@ -2,7 +2,7 @@ import { updateCharts } from "./charts.js";
 import { setAnalysisData } from "./downloads.js";
 import { initVideoSync } from "./video-sync.js";
 
-const API_URL = "https://sherboa-api.duckdns.org";
+const API_URL = "https://api.sherboa.com";
 const FALLBACK_FPS = 30;
 
 // ---------------------------------------------------------

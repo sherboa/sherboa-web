@@ -191,7 +191,7 @@ export function updateCharts(data, frameSelectionHandler = null) {
                     label: "SSIM",
                     data: data.ssim.per_frame,
                     borderColor: "green",
-                    backgroundColor: "#396117",
+                    backgroundColor: "#304b17",
                     tension: 0.2,
                     pointRadius: 0,
                     pointHoverRadius: 4
