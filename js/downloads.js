@@ -1,3 +1,5 @@
+// Este módulo maneja la descarga de archivos de datos en formato JSON, CSV y XML. Los datos corresponden a los resultados del último análisis realizado (VMAF, PSNR y SSIM).
+
 let lastAnalysisData = null;
 
 export function setAnalysisData(data) {

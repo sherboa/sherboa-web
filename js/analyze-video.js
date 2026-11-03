@@ -1,9 +1,11 @@
+// Este módulo gestiona el análisis de videos mediante la API de Sherboa.
+
 import { updateCharts } from "./charts.js";
 import { setAnalysisData } from "./downloads.js";
 import { initVideoSync } from "./video-sync.js";
 
 const API_URL = "https://api.sherboa.com";
-const FALLBACK_FPS = 30;
+const FALLBACK_FPS = 30;  // Valor predeterminado de FPS si no se puede obtener de los metadatos del video
 
 // ---------------------------------------------------------
 // 1. Obtener referencias a los elementos HTML.
@@ -27,8 +29,7 @@ const ssimResult = document.getElementById("ssim-result");
 let preparedVideoData = null;
 let preparationRequestId = 0;
 
-// Inicializa los controles de sincronización; el callback actualiza las miniaturas cuando cambia el offset o el timestamp
-const videoSync = initVideoSync({
+const videoSync = initVideoSync({  // Inicializa los controles de sincronización; el callback actualiza las miniaturas cuando cambia el offset o el timestamp
     onChange(syncState) {
         if (!syncState || !preparedVideoData) {
             hideThumbnails();
@@ -52,8 +53,7 @@ if (!videoSync) {  // Si el módulo no pudo inicializarse, se evita que falle el
 // 3. Gestión de las miniaturas.
 // ---------------------------------------------------------
 
-// Oculta y limpia las miniaturas para evitar mostrar imágenes de un análisis anterior
-function hideThumbnails() {
+function hideThumbnails() {  // Oculta y limpia las miniaturas para evitar mostrar imágenes de un análisis anterior
     referenceThumbnail.hidden = true;
     distortedThumbnail.hidden = true;
 
@@ -61,14 +61,13 @@ function hideThumbnails() {
     distortedThumbnail.removeAttribute("src");
 }
 
-// Convierte un timestamp en el nombre de la miniatura correspondiente; la API genera una miniatura por segundo, comenzando por el segundo cero.
-function getThumbnailFilename(timestamp) {
+function getThumbnailFilename(timestamp) {  // Convierte un timestamp en el nombre de la miniatura correspondiente; la API genera una miniatura por segundo, comenzando por el segundo cero
     const thumbnailIndex = Math.max(1, Math.round(timestamp) + 1);
 
     return `thumbnail_${String(thumbnailIndex).padStart(4, "0")}.jpg`;
 }
 
-function showThumbnails(analysisData, referenceTimestamp, distortedTimestamp, distortedInRange) {
+function showThumbnails(analysisData, referenceTimestamp, distortedTimestamp, distortedInRange) {  // Muestra las miniaturas correspondientes a los timestamps de referencia y distorsionado, si están disponibles; si no, oculta la miniatura correspondiente
     if (
         !analysisData?.thumbnails_available ||
         !analysisData.analysis_id
@@ -109,7 +108,7 @@ function showThumbnails(analysisData, referenceTimestamp, distortedTimestamp, di
 
 
 
-async function prepareVideos() {
+async function prepareVideos() {  // Esta función se ejecuta cuando se seleccionan ambos archivos de video; envía los videos a la API para capturar miniaturas y obtener metadatos, y actualiza el estado de la sincronización
     const referenceVideo =
         document.getElementById("reference-video").files[0];
 
@@ -143,7 +142,7 @@ async function prepareVideos() {
     formData.append("reference", referenceVideo);
     formData.append("distorted", distortedVideo);
 
-    try {
+    try {  // Se envían los videos a la API para capturar miniaturas y obtener metadatos; si la respuesta es exitosa, se actualiza el estado de la sincronización y se muestran las miniaturas correspondientes
         const response = await fetch(`${API_URL}/prepare`, {
             method: "POST",
             body: formData
@@ -228,7 +227,6 @@ document.getElementById("distorted-video").addEventListener(
 );
 
 
-
 referenceThumbnail.addEventListener("error", () => {  // Si una miniatura no está disponible, su error no invalida el análisis de calidad
     referenceThumbnail.hidden = true;
 });
@@ -241,7 +239,7 @@ distortedThumbnail.addEventListener("error", () => {
 // 5. Formato de timestamps.
 // ---------------------------------------------------------
 
-function formatTimestamp(seconds) {
+function formatTimestamp(seconds) {  // Convierte un valor de tiempo en segundos a un formato legible HH:MM:SS.mmm, con ceros a la izquierda y tres decimales para los milisegundos
     const safeSeconds = Math.max(0, seconds);
     const minutes = Math.floor(safeSeconds / 60);
     const remainingSeconds = (safeSeconds % 60).toFixed(3);
@@ -255,7 +253,7 @@ function formatTimestamp(seconds) {
 // 6. Ejecutar el análisis.
 // ---------------------------------------------------------
 
-form.addEventListener("submit", async (event) => {
+form.addEventListener("submit", async (event) => {  // Esta función se ejecuta cuando se envía el formulario de análisis; envía los videos a la API para calcular VMAF, PSNR y SSIM, y actualiza los resultados y gráficos correspondientes
     event.preventDefault();
 
     const referenceVideo =
@@ -314,6 +312,9 @@ form.addEventListener("submit", async (event) => {
         u: ${data.ssim.u}
         v: ${data.ssim.v}`;
 
+        const analysisOffset = Number(data.offset ?? formData.get("offset") ?? 0);
+        const referenceStart = Math.max(0, -analysisOffset);
+
         updateCharts(data, (frameIndex) => {  // Los tres gráficos comparten el callback para seleccionar un instante
             const reportedFps = Number(data.video?.fps);
 
@@ -323,14 +324,15 @@ form.addEventListener("submit", async (event) => {
                     : FALLBACK_FPS;
 
             if (videoSync) {
-                videoSync.setReferenceTime(frameIndex / referenceFps);
+                videoSync.setReferenceTime(
+                    referenceStart + frameIndex / referenceFps
+                );
             }
         });
 
-
         // La preparación ya contiene los metadatos y el analysis_id de las miniaturas; la respuesta de /vmaf se utiliza exclusivamente para las métricas
         if (videoSync && preparedVideoData) {
-            videoSync.setReferenceTime(0);
+            videoSync.setReferenceTime(referenceStart);
         }
     }
 

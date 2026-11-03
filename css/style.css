@@ -411,6 +411,12 @@ form fieldset {
     flex-wrap: wrap;
     gap: 0.75rem;
 }
+
+.sync-adjusting {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
 /************************************************************************************/
 
 

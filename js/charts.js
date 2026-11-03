@@ -1,10 +1,12 @@
+// Este módulo maneja la creación y actualización de gráficos de VMAF, PSNR y SSIM. También permite la descarga de los gráficos como imágenes PNG.
+
 let vmafChart = null;  // Variable para almacenar la instancia del gráfico de VMAF
 let psnrChart = null;  // Variable para almacenar la instancia del gráfico de PSNR
 let ssimChart = null;  // Variable para almacenar la instancia del gráfico de VMAF
 
 let onFrameSelected = null;
 
-function handleChartClick(event, activeElements) {
+function handleChartClick(event, activeElements) {  // Función para manejar el evento de clic en los gráficos, que permite seleccionar un frame específico y ejecutar una función de callback si está definida
     if (!activeElements.length || typeof onFrameSelected !== "function") {
         return;
     }
@@ -22,7 +24,7 @@ const ssimChartContainer = document.getElementById("ssim-chart-container");  // 
 //****************************************************************************************************************************
 // CURVAS DE VMAF, PSNR Y SSIM POR FRAME
 //****************************************************************************************************************************
-export function updateCharts(data, frameSelectionHandler = null) {
+export function updateCharts(data, frameSelectionHandler = null) {  // Función para actualizar los gráficos de VMAF, PSNR y SSIM con los datos proporcionados y establecer un manejador de selección de frame
     onFrameSelected = frameSelectionHandler;
 
     // VMAF

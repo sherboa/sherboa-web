@@ -10,6 +10,9 @@ export function initVideoSync({ onChange } = {}) {
     const referenceInput = document.getElementById("reference-video");
     const distortedInput = document.getElementById("distorted-video");
 
+    const referenceAdjusting = document.getElementById("reference-adjusting");
+    const distortedAdjusting = document.getElementById("distorted-adjusting");
+
     const syncSection = document.getElementById("sync-section");
 
     const referenceTime = document.getElementById("reference-time");
@@ -23,10 +26,11 @@ export function initVideoSync({ onChange } = {}) {
     const frameForwardButton = document.getElementById("sync-frame-forward");
     const resetButton = document.getElementById("sync-reset");
 
-    // Si falta algún elemento esperado, se detiene la inicialización con un error claro
-    const requiredElements = [
+    const requiredElements = [  // Si falta algún elemento esperado, se detiene la inicialización con un error claro
         referenceInput,
         distortedInput,
+        referenceAdjusting,
+        distortedAdjusting,
         syncSection,
         referenceTime,
         distortedTime,
@@ -60,11 +64,9 @@ export function initVideoSync({ onChange } = {}) {
     let referenceDuration = null;
     let distortedDuration = null;
 
-    // FPS de la referencia, obtenidos mediante ffprobe
-    let fps = FALLBACK_FPS;
+    let fps = FALLBACK_FPS;  // FPS de la referencia, obtenidos mediante ffprobe
 
-    // Timestamp seleccionado en la referencia, por ejemplo mediante un clic en cualquiera de los gráficos
-    let selectedReferenceTime = 0;
+    let selectedReferenceTime = 0;  // Timestamp seleccionado en la referencia, por ejemplo mediante un clic en cualquiera de los gráficos
 
     // ---------------------------------------------------------
     // 3. Funciones auxiliares.
@@ -93,7 +95,7 @@ export function initVideoSync({ onChange } = {}) {
         const paddedSeconds = String(secs).padStart(2, "0");
         const paddedMilliseconds = String(milliseconds).padStart(3, "0");
 
-        if (hours > 0) {
+        if (hours > 0) {  // Si hay horas, se muestra el formato completo HH:MM:SS.mmm
             return (
                 `${String(hours).padStart(2, "0")}:` +
                 `${paddedMinutes}:${paddedSeconds}.` +
@@ -107,16 +109,14 @@ export function initVideoSync({ onChange } = {}) {
         );
     }
 
-    // Mantiene el offset dentro de los límites admitidos por el slider; el rango se calcula según las duraciones reales de ambos videos
-    function clampOffset(value) {
+    function clampOffset(value) {  // Mantiene el offset dentro de los límites admitidos por el slider; el rango se calcula según las duraciones reales de ambos videos
         const minimum = Number(offsetSlider.min);
         const maximum = Number(offsetSlider.max);
 
         return Math.min(maximum, Math.max(minimum, value));
     }
 
-    // Indica si se conocen las duraciones válidas de ambos videos.
-    function videosReady() {
+    function videosReady() {  // Indica si se conocen las duraciones válidas de ambos videos
         return (
             Number.isFinite(referenceDuration) &&
             referenceDuration > 0 &&
@@ -125,8 +125,7 @@ export function initVideoSync({ onChange } = {}) {
         );
     }
 
-    // Calcula el timestamp correspondiente en el video distorsionado, usando la fórmula: tiempo_distorsionado = tiempo_referencia + offset
-    function getDistortedTime() {
+    function getDistortedTime() {  // Calcula el timestamp correspondiente en el video distorsionado, usando la fórmula: tiempo_distorsionado = tiempo_referencia + offset
         return selectedReferenceTime + syncOffset;
     }
 
@@ -134,8 +133,7 @@ export function initVideoSync({ onChange } = {}) {
     // 4. Actualizar los indicadores de la interfaz.
     // ---------------------------------------------------------
 
-    // Actualiza el valor visible del offset y su equivalente aproximado en frames; la equivalencia utiliza los FPS de la referencia cuando están disponibles
-    function updateOffsetDisplay() {
+    function updateOffsetDisplay() {  // Actualiza el valor visible del offset y su equivalente aproximado en frames; la equivalencia utiliza los FPS de la referencia cuando están disponibles
         const sign = syncOffset > 0 ? "+" : "";
 
         offsetValue.textContent = `${sign}${syncOffset.toFixed(3)} s`;
@@ -145,20 +143,64 @@ export function initVideoSync({ onChange } = {}) {
 
         frameOffset.textContent =
             `(~${frameSign}${approximateFrames} frames at ${fps} fps)`;
+        offsetSlider.value = String(syncOffset);
+        updateSyncIndicators();
     }
 
-    // Habilita o deshabilita los controles según la disponibilidad de los metadatos.
-    function updateControls() {
+    function updateSyncIndicators() {  // Indica qué video permanece fijo y cuál se está desplazando durante el ajuste
+        if (syncOffset > 0) {
+            referenceAdjusting.textContent = "Fixed";
+            distortedAdjusting.textContent = "Adjusting";
+        } else if (syncOffset < 0) {
+            referenceAdjusting.textContent = "Adjusting";
+            distortedAdjusting.textContent = "Fixed";
+        } else {
+            referenceAdjusting.textContent = "Aligned";
+            distortedAdjusting.textContent = "Aligned";
+        }
+    }
+
+    function updateControls() {  // Habilita o deshabilita los controles según la disponibilidad de los metadatos
         const ready = videosReady();
 
         offsetSlider.disabled = !ready;
-        frameBackButton.disabled = !ready;
-        frameForwardButton.disabled = !ready;
-        resetButton.disabled = !ready;
+        resetButton.disabled = !ready || Math.abs(syncOffset) < 0.000001;
+
+        if (!ready) {
+            frameBackButton.disabled = true;
+            frameForwardButton.disabled = true;
+            return;
+        }
+
+        const frameDuration = 1 / fps;
+
+        const referenceLastTime = Math.max(
+            0,
+            referenceDuration - 0.001
+        );
+
+        const distortedLastTime = Math.max(
+            0,
+            distortedDuration - 0.001
+        );
+
+        // -1 frame:
+        // Si el offset es positivo, retrocede Distorted; si es cero o negativo, avanza Reference
+        const canMoveBackward = syncOffset > 0
+            ? getDistortedTime() - frameDuration >= 0
+            : selectedReferenceTime + frameDuration <= referenceLastTime;
+
+        // +1 frame:
+        // Si el offset es negativo, retrocede Reference; si es cero o positivo, avanza Distorted
+        const canMoveForward = syncOffset < 0
+            ? selectedReferenceTime - frameDuration >= 0
+            : getDistortedTime() + frameDuration <= distortedLastTime;
+
+        frameBackButton.disabled = !canMoveBackward;
+        frameForwardButton.disabled = !canMoveForward;
     }
 
-    // Actualiza los timestamps visibles y notifica a analyze-video.js para que actualice las miniaturas
-    function notifyChange() {
+    function notifyChange() {  // Actualiza los timestamps visibles y notifica a analyze-video.js para que actualice las miniaturas
         const distortedTimestamp = getDistortedTime();
 
         const distortedInRange =
@@ -186,18 +228,18 @@ export function initVideoSync({ onChange } = {}) {
     // 5. Sincronización de las miniaturas.
     // ---------------------------------------------------------
 
-    // Notifica el timestamp correspondiente a cada video; si el timestamp distorsionado queda fuera de su duración, se informa en pantalla y se evita solicitar una miniatura para un instante inválido
-    function updatePreview() {
+    function updatePreview() {  // Notifica el timestamp correspondiente a cada video; si el timestamp distorsionado queda fuera de su duración, se informa en pantalla y se evita solicitar una miniatura para un instante inválido
+        updateOffsetBounds();
         updateOffsetDisplay();
         notifyChange();
+        updateControls();
     }
 
     // ---------------------------------------------------------
     // 6. Gestión de los archivos seleccionados.
     // ---------------------------------------------------------
 
-    // Muestra la sección de sincronización únicamente cuando se seleccionaron los dos archivos
-    function updateSectionVisibility() {
+    function updateSectionVisibility() {  // Muestra la sección de sincronización únicamente cuando se seleccionaron los dos archivos
         const bothFilesSelected = Boolean(
             referenceInput.files?.[0] &&
             distortedInput.files?.[0]
@@ -206,32 +248,52 @@ export function initVideoSync({ onChange } = {}) {
         syncSection.hidden = !bothFilesSelected;
     }
 
-    // Recalcula el rango permitido para el offset
-    // La fórmula es: tiempo_distorsionado = tiempo_referencia + offset
-    // Por eso, como rango global de offsets:
-    //    mínimo = -duración de la referencia
-    //    máximo = duración del distorsionado
-    // Esto permite ajustar videos de distinta duración sin límites fijos arbitrarios
+    // Recalcula el rango permitido para el offset según el video que permanece fijo al cruzar cero
     function updateOffsetBounds() {
         if (!videosReady()) {
             updateControls();
             return;
         }
 
-        offsetSlider.min = String(-referenceDuration);
-        offsetSlider.max = String(distortedDuration);
+        const referenceLastTime = Math.max(
+            0,
+            referenceDuration - 0.001
+        );
+
+        const distortedLastTime = Math.max(
+            0,
+            distortedDuration - 0.001
+        );
+
+        let minimum;
+        let maximum;
+
+        if (syncOffset < 0) {
+            // Con offset negativo, Distorted permanece fijo y Reference se desplaza
+            const anchorTime = getDistortedTime();
+
+            minimum = anchorTime - referenceLastTime;
+            maximum = anchorTime;
+        } else {
+            // Con offset positivo o cero, Reference permanece fijo y Distorted se desplaza
+            const anchorTime = selectedReferenceTime;
+
+            minimum = -anchorTime;
+            maximum = distortedLastTime - anchorTime;
+        }
+
+        // Conserva el offset actual dentro del rango, incluso si el timestamp seleccionado desde un gráfico deja temporalmente al otro video fuera de duración
+        minimum = Math.min(minimum, syncOffset);
+        maximum = Math.max(maximum, syncOffset);
+
+        offsetSlider.min = String(minimum);
+        offsetSlider.max = String(maximum);
         offsetSlider.step = String(1 / fps);
-
-        // Si cambió alguno de los archivos, el offset anterior podría quedar fuera del nuevo rango; en ese caso, se ajusta al límite permitido
-        syncOffset = clampOffset(syncOffset);
         offsetSlider.value = String(syncOffset);
-
-        updatePreview();
-        updateControls();
     }
 
-    // Recibe los metadatos de ambos videos devueltos por la API; no se necesita reproducir los archivos en el navegador
-    function setVideoMetadata({
+
+    function setVideoMetadata({  // Recibe los metadatos de ambos videos devueltos por la API; no se necesita reproducir los archivos en el navegador
         referenceDuration: newReferenceDuration,
         distortedDuration: newDistortedDuration,
         fps: newFps
@@ -252,11 +314,10 @@ export function initVideoSync({ onChange } = {}) {
             );
         }
 
-        updateOffsetBounds();
+        updatePreview();
     }
 
-    // Limpia el estado de sincronización cuando se seleccionan otros archivos o comienza un nuevo análisis
-    function clearMetadata() {
+    function clearMetadata() {  // Limpia el estado de sincronización cuando se seleccionan otros archivos o comienza un nuevo análisis
         referenceDuration = null;
         distortedDuration = null;
         selectedReferenceTime = 0;
@@ -269,6 +330,7 @@ export function initVideoSync({ onChange } = {}) {
 
         offsetValue.textContent = "0.000 s";
         frameOffset.textContent = "";
+        updateSyncIndicators();
 
         referenceTime.textContent = "00:00.000";
         distortedTime.textContent = "00:00.000";
@@ -284,33 +346,69 @@ export function initVideoSync({ onChange } = {}) {
     // 7. Modificación del offset.
     // ---------------------------------------------------------
 
-    // Cambia el offset y actualiza la interfaz
-    // Esta función centraliza las modificaciones realizadas mediante el slider, los botones de frames o el botón de reinicio
+    // Cambia el offset y actualiza la interfaz: esta función centraliza las modificaciones realizadas mediante el slider, los botones de frames o el botón de reinicio
     function setOffset(newOffset) {
         if (!Number.isFinite(newOffset) || !videosReady()) {
             return;
         }
 
-        syncOffset = clampOffset(newOffset);
-        offsetSlider.value = String(syncOffset);
+        newOffset = clampOffset(newOffset);
+
+        const currentDistortedTime = getDistortedTime();
+
+        if (newOffset < 0) {
+            // Si viene de un offset positivo, Reference queda como punto de anclaje al cruzar cero; si ya estaba en negativo, se conserva la posición actual de Distorted
+            const anchorTime = syncOffset > 0
+                ? selectedReferenceTime
+                : currentDistortedTime;
+
+            selectedReferenceTime = anchorTime - newOffset;
+
+        } else if (newOffset >= 0 && syncOffset < 0) {
+            // Al cruzar de negativo a cero o positivo, conserva Distorted como punto de anclaje
+            selectedReferenceTime = currentDistortedTime;
+        }
+
+        syncOffset = newOffset;
 
         updatePreview();
     }
 
-    // Desplaza el offset una cantidad equivalente a un frame; utiliza los FPS reales de la referencia cuando están disponibles
-    function adjustByOneFrame(direction) {
+    function adjustByOneFrame(direction) {  // Desplaza el offset una cantidad equivalente a un frame; utiliza los FPS reales de la referencia cuando están disponibles
+        if (!videosReady()) {
+            return;
+        }
+
         const frameDuration = 1 / fps;
 
-        setOffset(syncOffset + direction * frameDuration);
+        if (direction > 0) {
+            if (syncOffset < 0) {
+                // Vuelve hacia cero moviendo Reference hacia atrás
+                selectedReferenceTime -= frameDuration;
+                syncOffset += frameDuration;
+            } else {
+                // Desde cero, o con offset positivo, avanza Distorted
+                syncOffset += frameDuration;
+            }
+        } else {
+            if (syncOffset > 0) {
+                // Vuelve hacia cero moviendo Distorted hacia atrás
+                syncOffset -= frameDuration;
+            } else {
+                // Desde cero, o con offset negativo, avanza Reference
+                selectedReferenceTime += frameDuration;
+                syncOffset -= frameDuration;
+            }
+        }
+
+        updatePreview();
     }
 
-    // Restablece el desplazamiento temporal a cero
-    function resetOffset() {
+    function resetOffset() {  // Restablece el desplazamiento temporal a cero
         setOffset(0);
     }
 
-    // Actualiza el timestamp de referencia cuando el usuario selecciona un frame en un gráfico
-    function setReferenceTime(seconds) {
+    function setReferenceTime(seconds) {  // Actualiza el timestamp de referencia cuando el usuario selecciona un frame en un gráfico
         if (!Number.isFinite(seconds)) {
             return;
         }
@@ -322,26 +420,24 @@ export function initVideoSync({ onChange } = {}) {
             )
             : Math.max(0, seconds);
 
-        notifyChange();
+        updatePreview();
     }
 
     // ---------------------------------------------------------
     // 8. Conectar los eventos de la interfaz.
     // ---------------------------------------------------------
 
-    // Cambios en los archivos seleccionados; al cambiar cualquiera de ellos, se invalidan los metadatos del análisis anterior
-    referenceInput.addEventListener("change", () => {
+    referenceInput.addEventListener("change", () => {  // Cambios en los archivos seleccionados; al cambiar cualquiera de ellos, se invalidan los metadatos del análisis anterior
         clearMetadata();
         updateSectionVisibility();
     });
 
-    distortedInput.addEventListener("change", () => {
+    distortedInput.addEventListener("change", () => {  // Cambios en los archivos seleccionados; al cambiar cualquiera de ellos, se invalidan los metadatos del análisis anterior
         clearMetadata();
         updateSectionVisibility();
     });
 
-    // El slider actualiza el offset mientras el usuario lo arrastra
-    offsetSlider.addEventListener("input", () => {
+    offsetSlider.addEventListener("input", () => {  // El slider actualiza el offset mientras el usuario lo arrastra
         setOffset(Number(offsetSlider.value));
     });
 
@@ -360,8 +456,7 @@ export function initVideoSync({ onChange } = {}) {
     // 9. Estado inicial.
     // ---------------------------------------------------------
 
-    // La sección no aparece hasta que se seleccionan ambos archivos.
-    syncSection.hidden = true;
+    syncSection.hidden = true;  // La sección no aparece hasta que se seleccionan ambos archivos
 
     updateOffsetDisplay();
     updateControls();

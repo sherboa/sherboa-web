@@ -69,19 +69,25 @@
                     <div class="sync-preview">
                         <div class="sync-video">
                             <h4>reference video</h4>
+                            <p id="reference-adjusting" class="sync-adjusting">
+                                adjusting
+                            </p>
                             <img id="reference-thumbnail" class="sync-thumbnail" alt="Reference video thumbnail" hidden>
                             <p id="reference-time">00:00.000</p>
                         </div>
 
                         <div class="sync-video">
                             <h4>distorted video</h4>
+                            <p id="distorted-adjusting" class="sync-adjusting">
+                                adjusting
+                            </p>
                             <img id="distorted-thumbnail" class="sync-thumbnail" alt="Distorted video thumbnail" hidden>
                             <p id="distorted-time">00:00.000</p>
                         </div>
                     </div>
 
                     <div class="sync-controls">
-                        <label for="sync-offset">distorted video offset</label>
+                        <label for="sync-offset">reference & distorted video offset</label>
                         <input type="range" id="sync-offset" min="0" max="0" step="0.001" value="0" disabled>
                         <p>
                             offset:
