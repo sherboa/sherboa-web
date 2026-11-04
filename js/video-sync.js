@@ -248,7 +248,7 @@ export function initVideoSync({ onChange } = {}) {
         syncSection.hidden = !bothFilesSelected;
     }
 
-    // Recalcula el rango permitido para el offset según el video que permanece fijo al cruzar cero
+    // Recalcula el rango simétrico del slider según el timestamp de anclaje
     function updateOffsetBounds() {
         if (!videosReady()) {
             updateControls();
@@ -265,33 +265,33 @@ export function initVideoSync({ onChange } = {}) {
             distortedDuration - 0.001
         );
 
-        let minimum;
-        let maximum;
+        // Determina el timestamp que permanece fijo al cruzar cero
+        const anchorTime = syncOffset < 0
+            ? getDistortedTime()
+            : selectedReferenceTime;
 
-        if (syncOffset < 0) {
-            // Con offset negativo, Distorted permanece fijo y Reference se desplaza
-            const anchorTime = getDistortedTime();
+        // Calcula el desplazamiento máximo disponible en cada dirección
+        const referenceAvailable = Math.max(
+            0,
+            referenceLastTime - anchorTime
+        );
 
-            minimum = anchorTime - referenceLastTime;
-            maximum = anchorTime;
-        } else {
-            // Con offset positivo o cero, Reference permanece fijo y Distorted se desplaza
-            const anchorTime = selectedReferenceTime;
+        const distortedAvailable = Math.max(
+            0,
+            distortedLastTime - anchorTime
+        );
 
-            minimum = -anchorTime;
-            maximum = distortedLastTime - anchorTime;
-        }
+        // Utiliza una escala simétrica y conserva el offset actual
+        const maxOffset = Math.max(
+            Math.abs(syncOffset),
+            Math.min(referenceAvailable, distortedAvailable)
+        );
 
-        // Conserva el offset actual dentro del rango, incluso si el timestamp seleccionado desde un gráfico deja temporalmente al otro video fuera de duración
-        minimum = Math.min(minimum, syncOffset);
-        maximum = Math.max(maximum, syncOffset);
-
-        offsetSlider.min = String(minimum);
-        offsetSlider.max = String(maximum);
+        offsetSlider.min = String(-maxOffset);
+        offsetSlider.max = String(maxOffset);
         offsetSlider.step = String(1 / fps);
         offsetSlider.value = String(syncOffset);
     }
-
 
     function setVideoMetadata({  // Recibe los metadatos de ambos videos devueltos por la API; no se necesita reproducir los archivos en el navegador
         referenceDuration: newReferenceDuration,
@@ -346,7 +346,7 @@ export function initVideoSync({ onChange } = {}) {
     // 7. Modificación del offset.
     // ---------------------------------------------------------
 
-    // Cambia el offset y actualiza la interfaz: esta función centraliza las modificaciones realizadas mediante el slider, los botones de frames o el botón de reinicio
+    // Cambia el offset y actualiza la interfaz
     function setOffset(newOffset) {
         if (!Number.isFinite(newOffset) || !videosReady()) {
             return;
@@ -356,17 +356,53 @@ export function initVideoSync({ onChange } = {}) {
 
         const currentDistortedTime = getDistortedTime();
 
+        const referenceLastTime = Math.max(
+            0,
+            referenceDuration - 0.001
+        );
+
+        const distortedLastTime = Math.max(
+            0,
+            distortedDuration - 0.001
+        );
+
         if (newOffset < 0) {
-            // Si viene de un offset positivo, Reference queda como punto de anclaje al cruzar cero; si ya estaba en negativo, se conserva la posición actual de Distorted
+            // Distorted permanece fijo y Reference se desplaza
             const anchorTime = syncOffset > 0
                 ? selectedReferenceTime
                 : currentDistortedTime;
 
+            const maxNegativeOffset = Math.max(
+                0,
+                referenceLastTime - anchorTime
+            );
+
+            newOffset = Math.max(
+                newOffset,
+                -maxNegativeOffset
+            );
+
             selectedReferenceTime = anchorTime - newOffset;
 
-        } else if (newOffset >= 0 && syncOffset < 0) {
-            // Al cruzar de negativo a cero o positivo, conserva Distorted como punto de anclaje
-            selectedReferenceTime = currentDistortedTime;
+        } else {
+            // Reference permanece fijo y Distorted se desplaza
+            const anchorTime = syncOffset < 0
+                ? currentDistortedTime
+                : selectedReferenceTime;
+
+            const maxPositiveOffset = Math.max(
+                0,
+                distortedLastTime - anchorTime
+            );
+
+            newOffset = Math.min(
+                newOffset,
+                maxPositiveOffset
+            );
+
+            if (syncOffset < 0) {
+                selectedReferenceTime = anchorTime;
+            }
         }
 
         syncOffset = newOffset;
