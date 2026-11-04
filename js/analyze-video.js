@@ -28,6 +28,7 @@ const ssimResult = document.getElementById("ssim-result");
 
 let preparedVideoData = null;
 let preparationRequestId = 0;
+const thumbnailRequestIds = new WeakMap();  // Identifica cada solicitud de miniatura para descartar errores de cargas anteriores
 
 const videoSync = initVideoSync({  // Inicializa los controles de sincronización; el callback actualiza las miniaturas cuando cambia el offset o el timestamp
     onChange(syncState) {
@@ -67,7 +68,26 @@ function getThumbnailFilename(timestamp) {  // Convierte un timestamp en el nomb
     return `thumbnail_${String(thumbnailIndex).padStart(4, "0")}.jpg`;
 }
 
-function showThumbnails(analysisData, referenceTimestamp, distortedTimestamp, distortedInRange) {  // Muestra las miniaturas correspondientes a los timestamps de referencia y distorsionado, si están disponibles; si no, oculta la miniatura correspondiente
+function setThumbnailSource(thumbnail, thumbnailUrl) {  // Actualiza la miniatura y evita que un error de carga anterior oculte una imagen más reciente
+    if (thumbnail.getAttribute("src") === thumbnailUrl) {
+        return;
+    }
+
+    const requestId =
+        (thumbnailRequestIds.get(thumbnail) || 0) + 1;
+
+    thumbnailRequestIds.set(thumbnail, requestId);
+
+    thumbnail.src = thumbnailUrl;
+
+    thumbnail.decode().catch(() => {
+        if (thumbnailRequestIds.get(thumbnail) === requestId) {
+            thumbnail.hidden = true;
+        }
+    });
+}
+
+function showThumbnails(analysisData, referenceTimestamp, distortedTimestamp, distortedInRange) {  // Muestra las miniaturas correspondientes a los timestamps de referencia y distorsionado, si están disponibles; evita solicitar nuevamente una imagen que ya está cargada o solicitada
     if (
         !analysisData?.thumbnails_available ||
         !analysisData.analysis_id
@@ -82,8 +102,10 @@ function showThumbnails(analysisData, referenceTimestamp, distortedTimestamp, di
     const referenceFilename =
         getThumbnailFilename(referenceTimestamp);
 
-    referenceThumbnail.src =
+    const referenceUrl =
         `${thumbnailBaseUrl}/reference/${referenceFilename}`;
+
+    setThumbnailSource(referenceThumbnail, referenceUrl);
 
     referenceThumbnail.hidden = false;
 
@@ -100,13 +122,13 @@ function showThumbnails(analysisData, referenceTimestamp, distortedTimestamp, di
     const distortedFilename =
         getThumbnailFilename(distortedTimestamp);
 
-    distortedThumbnail.src =
+    const distortedUrl =
         `${thumbnailBaseUrl}/distorted/${distortedFilename}`;
+
+    setThumbnailSource(distortedThumbnail, distortedUrl);
 
     distortedThumbnail.hidden = false;
 }
-
-
 
 async function prepareVideos() {  // Esta función se ejecuta cuando se seleccionan ambos archivos de video; envía los videos a la API para capturar miniaturas y obtener metadatos, y actualiza el estado de la sincronización
     const referenceVideo =
@@ -225,15 +247,6 @@ document.getElementById("distorted-video").addEventListener(
     "change",
     prepareVideos
 );
-
-
-referenceThumbnail.addEventListener("error", () => {  // Si una miniatura no está disponible, su error no invalida el análisis de calidad
-    referenceThumbnail.hidden = true;
-});
-
-distortedThumbnail.addEventListener("error", () => {
-    distortedThumbnail.hidden = true;
-});
 
 // ---------------------------------------------------------
 // 5. Formato de timestamps.
