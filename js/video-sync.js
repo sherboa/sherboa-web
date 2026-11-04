@@ -129,6 +129,12 @@ export function initVideoSync({ onChange } = {}) {
         return selectedReferenceTime + syncOffset;
     }
 
+    function normalizeOffset(value) {  // Elimina residuos de precisión decimal al llegar a cero
+        const tolerance = (1 / fps) * 0.000001;
+
+        return Math.abs(value) < tolerance ? 0 : value;
+    }
+
     // ---------------------------------------------------------
     // 4. Actualizar los indicadores de la interfaz.
     // ---------------------------------------------------------
@@ -352,7 +358,7 @@ export function initVideoSync({ onChange } = {}) {
             return;
         }
 
-        newOffset = clampOffset(newOffset);
+        newOffset = normalizeOffset(clampOffset(newOffset));
 
         const currentDistortedTime = getDistortedTime();
 
@@ -437,6 +443,7 @@ export function initVideoSync({ onChange } = {}) {
             }
         }
 
+        syncOffset = normalizeOffset(syncOffset);
         updatePreview();
     }
 
